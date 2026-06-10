@@ -1,0 +1,114 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+package Model{
+package "Entities"{
+    class Detective{
+        -nombre : String
+        -casos : List <Caso>
+        -porcentaje: int
+        +obtenerCasosResueltos()
+    }
+
+    class Casos{
+        -nombre : String
+        -sospechosos : List<Sospechoso>
+        -evidencias : List<Evidencia>
+        -pistas : List<Pista>
+        -descripcion : String
+        -notas : String
+        -estado : Estados
+        -correcto : boolean
+        +verificarSospechoso()
+    }
+    class Pista{
+        -id_pista : int
+        -texto : String
+        -id_caso: int
+    }
+
+    class Evidencia{
+        -id_pista : int
+        -texto : String
+        -id_caso: int
+    }
+
+    enum Estados{
+        NO RESUELTO,
+        PENDIENTE,
+        RESUELTO
+    }
+
+    class Sospechoso{
+        -nombre: String
+        -preguntasYrespuestas : Map<String,String>
+        -culpable: boolean
+    }
+    Casos "1" *-- "n" Sospechoso
+    Casos "1" *-- "n" Pista
+    Casos "1" *-- "n" Evidencia
+    Detective "1" --> "n" Casos
+}
+
+
+package "Service"{
+    class JuegoService{
+         -caso : Caso
+         -detective: Detective
+         +abrirCaso()
+         +preguntarSospechoso()
+         +apuntar()
+         +leerPista()
+         +verEvidencia()
+         +preguntar()
+         +responder()
+    }
+}
+package "DAO"{
+    class CasoDAO{
+        +obtenerCasosporID(int id)
+        +obtenerCasosporEstado(Estado estado)
+        +obtenerCasosporCorrecto(boolean correcto)
+    }
+    class InvestigacionDAO{
+        + obtenerPistasPorCaso(int idCaso) : List<Pista>
+        + obtenerEvidenciasPorCaso(int idCaso) : List<Evidencia>
+    }
+    class SospechosoDAO{
+        +obtenerSospechososPorCaso(int idcaso)
+        +obtenerCulpablePorCaso(int idcaso)
+        + obtenerInterrogatorio(int idSospechoso) : Map<String, String>
+    }
+}
+
+}
+package "View"{
+    class MenuPrincipal{
+    
+    }
+    class VerCasos{
+
+    }
+    class IniciarInvestigacion{
+
+    }
+    class ListarCasosResueltos{
+
+    }
+
+}
+package "Controller" {
+    class MenuPrincipalController{
+
+    }
+    class VerCasosController{
+
+    }
+     class IniciarInvestigacionController{
+
+     }
+     class ListarCasosResueltosController{
+
+     }
+
+}
+@enduml
