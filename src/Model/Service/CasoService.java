@@ -2,6 +2,7 @@ package Model.Service;
 
 import Model.DAO.CasoDAO;
 import Model.Entities.Caso;
+import Model.Entities.Dificultad;
 import Model.Entities.Estado;
 
 import java.util.List;
@@ -31,6 +32,11 @@ public class CasoService {
     }
 
 
+    public void actualizarDificultad(int id_caso, Dificultad dificultad) {
+        casoDAO.actualizarDificultad(id_caso,dificultad);
+    }
+
+
 
     public List<Caso> obtenerCasosporCorrecto(boolean correcto) {
         return casoDAO.obtenerCasosporCorrecto(correcto);
@@ -39,6 +45,7 @@ public class CasoService {
     public List<Caso> obtenerCasosporEstado(Estado estado) {
         return casoDAO.obtenerCasosporEstado(estado);
     }
+
 
     public Caso obtenerCasoPorId(int id_caso) {
         return casoDAO.obtenerCasoPorId(id_caso);

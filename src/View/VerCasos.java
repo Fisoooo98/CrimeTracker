@@ -2,6 +2,7 @@ package View;
 
 import Controller.CasoController;
 import Model.Entities.Caso;
+import Model.Entities.Dificultad;
 import Model.Entities.Estado;
 import Model.Service.CasoService;
 
@@ -63,6 +64,7 @@ public class VerCasos extends JFrame {
                 .toList();
 
         JPanel panelCasos = new JPanel();
+        System.out.println(casos);
 
         panelCasos.setBackground(MAIN_BG_COLOR);
 
@@ -178,7 +180,7 @@ public class VerCasos extends JFrame {
         //Listener boton aceptar
         btnAceptar.addActionListener(e->{
             System.out.println(caso);
-            casoController.seleccionarCaso(caso.getId_caso())
+            casoController.seleccionarCaso(caso.getId_caso(),this)
             ;});
 
         panelInferior.add(btnAceptar, BorderLayout.EAST);
@@ -188,9 +190,73 @@ public class VerCasos extends JFrame {
         return panel;
     }
 
-    static void main() {
-        java.awt.EventQueue.invokeLater(() -> {
-            new VerCasos().setVisible(true);
-        });
+    //Panel dificultad
+    public void panelDificultad(int idcaso) {
+        JDialog dialogo = new JDialog(this, "Seleccionar Dificultad", true);
+        dialogo.setUndecorated(true);
+        dialogo.setSize(500, 220);
+        dialogo.setLocationRelativeTo(this);
+
+        JPanel panelFondo = new JPanel(new BorderLayout());
+        panelFondo.setBackground(PANEL_BG_COLOR);
+        panelFondo.setBorder(BorderFactory.createLineBorder(BORDER_COLOR, 2));
+
+        JLabel lblTitulo = new JLabel("SELECCIONA LA DIFICULTAD", SwingConstants.CENTER);
+        lblTitulo.setForeground(TITLE_COLOR);
+        lblTitulo.setFont(new Font("Georgia", Font.BOLD, 18));
+        lblTitulo.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
+        panelFondo.add(lblTitulo, BorderLayout.NORTH);
+
+        JPanel panelOpciones = new JPanel(new GridLayout(1, 3, 15, 0));
+        panelOpciones.setOpaque(false);
+        panelOpciones.setBorder(BorderFactory.createEmptyBorder(10, 20, 20, 20));
+
+        String[] dificultades = {"FACIL", "NORMAL", "DIFICIL"};
+        String[] descripciones = {
+                "<html><center>Más preguntas disponibles y pistas claras.</center></html>",
+                "<html><center>Cantidad estándar de preguntas y sospechas equilibradas.</center></html>",
+                "<html><center>Preguntas muy limitadas. Un verdadero reto.</center></html>"
+        };
+
+        for (int i = 0; i < dificultades.length; i++) {
+            JPanel cardDificultad = new JPanel(new BorderLayout(0, 10));
+            cardDificultad.setOpaque(false);
+
+            JButton btnDificultad = new JButton(dificultades[i]);
+            btnDificultad.setBackground(MAIN_BG_COLOR);
+            btnDificultad.setForeground(TEXT_COLOR);
+            btnDificultad.setFont(new Font("Monospaced", Font.BOLD, 13));
+            btnDificultad.setFocusPainted(false);
+            btnDificultad.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            btnDificultad.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(BORDER_COLOR, 1),
+                    BorderFactory.createEmptyBorder(8, 0, 8, 0)
+            ));
+
+            btnDificultad.addActionListener(e -> {
+                String txtBtn = btnDificultad.getText();
+                Dificultad dificultad = Dificultad.NOSELECCIONADO;
+                switch (txtBtn) {
+                    case "FACIL" -> dificultad = Dificultad.FACIL;
+                    case "NORMAL" -> dificultad = Dificultad.NORMAL;
+                    case "DIFICIL" -> dificultad = Dificultad.DIFICIL;
+                }
+                casoService.actualizarDificultad(idcaso,dificultad);
+                dialogo.dispose();
+            });
+
+            JLabel lblDesc = new JLabel(descripciones[i], SwingConstants.CENTER);
+            lblDesc.setForeground(TEXT_COLOR);
+            lblDesc.setFont(new Font("SansSerif", Font.PLAIN, 11));
+
+            cardDificultad.add(btnDificultad, BorderLayout.NORTH);
+            cardDificultad.add(lblDesc, BorderLayout.CENTER);
+            panelOpciones.add(cardDificultad);
+        }
+
+        panelFondo.add(panelOpciones, BorderLayout.CENTER);
+        dialogo.add(panelFondo);
+        dialogo.setVisible(true);
     }
+
 }

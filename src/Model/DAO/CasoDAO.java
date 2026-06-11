@@ -1,6 +1,7 @@
 package Model.DAO;
 
 import Model.Entities.Caso;
+import Model.Entities.Dificultad;
 import Model.Entities.Estado;
 
 import java.sql.*;
@@ -33,6 +34,9 @@ public class CasoDAO {
                 //Atributos que están fuera del contructor
                 caso.setCorrecto(rs.getBoolean("correcto"));
                 caso.setEstado(Estado.valueOf(rs.getString("estado")));
+                caso.setDificultad(Dificultad.valueOf(rs.getString("dificultad")));
+                caso.setContador_preguntas(rs.getInt("contador_preguntas"));
+                caso.setProbEvidencia(rs.getInt("probEvidencia"));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -63,6 +67,9 @@ public class CasoDAO {
                 //Atributos que están fuera del contructor
                 caso.setCorrecto(rs.getBoolean("correcto"));
                 caso.setEstado(Estado.valueOf(rs.getString("estado")));
+                caso.setDificultad(Dificultad.valueOf(rs.getString("dificultad")));
+                caso.setContador_preguntas(rs.getInt("contador_preguntas"));
+                caso.setProbEvidencia(rs.getInt("probEvidencia"));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -97,6 +104,9 @@ public class CasoDAO {
                 );
                 caso.setCorrecto(rs.getBoolean("correcto"));
                 caso.setEstado(Estado.valueOf(rs.getString("estado")));
+                caso.setDificultad(Dificultad.valueOf(rs.getString("dificultad")));
+                caso.setContador_preguntas(rs.getInt("contador_preguntas"));
+                caso.setProbEvidencia(rs.getInt("probEvidencia"));
                 casos.add(caso);
             }
         } catch (SQLException e) {
@@ -129,6 +139,9 @@ public class CasoDAO {
                 );
                 caso.setCorrecto(rs.getBoolean("correcto"));
                 caso.setEstado(Estado.valueOf(rs.getString("estado")));
+                caso.setDificultad(Dificultad.valueOf(rs.getString("dificultad")));
+                caso.setContador_preguntas(rs.getInt("contador_preguntas"));
+                caso.setProbEvidencia(rs.getInt("probEvidencia"));
                 casos.add(caso);
             }
         } catch (SQLException e) {
@@ -197,5 +210,56 @@ public class CasoDAO {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    //Actualizamos las preguntas restantes del caso
+    public int actualizarPreguntasRestantes(int id_caso,int numpreguntas) {
+        String sql = "UPDATE Casos SET contador_preguntas = ? WHERE id_caso = ?";
+        try(
+                Connection connection = DriverManager.getConnection(url);
+                PreparedStatement ps = connection.prepareStatement(sql);
+        ) {
+            ps.setInt(1,numpreguntas);
+            ps.setInt(2, id_caso);
+            return ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    //Actualizar Dificultad
+    public int actualizarDificultad(int id_caso,Dificultad dificultad) {
+        int probEvidencia = 0;
+        int numpreguntas = 0;
+        int res;
+       switch (dificultad) {
+           case FACIL ->  {
+               probEvidencia = 50;
+               numpreguntas = 7;
+           }
+           case NORMAL ->   {
+               probEvidencia = 25;
+               numpreguntas = 5;
+           }
+           case DIFICIL ->   {
+               probEvidencia = 20;
+               numpreguntas = 3;
+           }
+       }
+       String sql  = "UPDATE Casos SET dificultad = ?,probevidencia = ?,contador_preguntas = ? WHERE id_caso = ?";
+        try(
+                Connection connection = DriverManager.getConnection(url);
+                PreparedStatement ps = connection.prepareStatement(sql);
+        ) {
+            ps.setString(1,dificultad.name());
+            ps.setInt(2, probEvidencia);
+            ps.setInt(3, numpreguntas);
+            ps.setInt(4, id_caso);
+            res = ps.executeUpdate();
+
+        }catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return res;
     }
 }

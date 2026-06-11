@@ -19,6 +19,7 @@ public class VentanaInterrogar extends JFrame {
     private VentanaCaso ventanaCaso;
     private JLabel etiquetaTextoDialogo;
     private Timer timerActual;
+    private JLabel lblcontadorpreguntas;
     private JuegoService juegoService = new JuegoService();
     private CasoService casoService = new CasoService();
     private Sospechoso sospechosoActual;
@@ -49,13 +50,14 @@ public class VentanaInterrogar extends JFrame {
     }
 
     public void initComponents() {
-        add(CrearLogDialogo(), BorderLayout.SOUTH);
+        add(PanelInferior(), BorderLayout.SOUTH);
 
         add(crearPanelSospechosos(caso.getSospechosos()), BorderLayout.CENTER);
 
         add(crearTitulo(), BorderLayout.NORTH);
 
     }
+
 
 
     public JPanel crearTitulo() {
@@ -67,6 +69,7 @@ public class VentanaInterrogar extends JFrame {
         lblTitulo.setForeground(TITLE_COLOR);
 
         panelTitulo.add(lblTitulo);
+
         return panelTitulo;
     }
 
@@ -162,12 +165,26 @@ public class VentanaInterrogar extends JFrame {
     }
 
 
-    public JPanel CrearLogDialogo() {
+    public JPanel PanelInferior() {
+
+        //Panel inferior
+        JPanel panelinferior = new JPanel();
+        panelinferior.setLayout(new BorderLayout());
+        panelinferior.setBackground(MAIN_BG_COLOR);
+
+        //Panel Log
         JPanel panelLog = new JPanel();
         panelLog.setLayout(new BorderLayout());
         panelLog.setBackground(PANEL_BG_COLOR);
         panelLog.setBorder(BorderFactory.createLineBorder(BORDER_COLOR, 4));
         panelLog.setPreferredSize(new Dimension(1100, 120));
+
+        //Titulo
+        int contador = caso.getContador_preguntas();
+        lblcontadorpreguntas = new JLabel("Preguntas Restantes: " + contador);
+        lblcontadorpreguntas.setFont(new Font("Monospaced", Font.BOLD, 23));
+        lblcontadorpreguntas.setForeground(TEXT_COLOR);
+        lblcontadorpreguntas.setBackground(PANEL_BG_COLOR);
 
         etiquetaTextoDialogo = new JLabel("<html></html>");
         etiquetaTextoDialogo.setForeground(TITLE_COLOR);
@@ -214,7 +231,13 @@ public class VentanaInterrogar extends JFrame {
         panelLog.add(etiquetaTextoDialogo, BorderLayout.CENTER);
         panelLog.add(panelBotonesAccion, BorderLayout.EAST);
 
-        return panelLog;
+        panelinferior.add(lblcontadorpreguntas, BorderLayout.NORTH);
+        panelinferior.add(panelLog, BorderLayout.CENTER);
+
+        revalidate();
+        repaint();
+
+        return panelinferior;
     }
 
     public void actualizarTextoDialogo(String texto) {
@@ -243,13 +266,15 @@ public class VentanaInterrogar extends JFrame {
     }
     public JPanel panelPreguntas(int id_sospechoso, int idcaso) {
 
+
         List<String> preguntas = juegoService.InterrogarSospechoso(id_sospechoso, idcaso);
 
 
-        JPanel panelPrincipal = new JPanel(new BorderLayout());
+        JPanel panelPrincipal = new JPanel(new BorderLayout(10,10));
         panelPrincipal.setBackground(MAIN_BG_COLOR);
 
         panelPrincipal.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+
 
 
         JPanel panelBotones = new JPanel(new GridLayout(0, 1, 0, 5));
@@ -284,8 +309,10 @@ public class VentanaInterrogar extends JFrame {
 
 
             panelBotones.add(botonPregunta);
-        }
 
+            revalidate();
+            repaint();
+        }
         panelPrincipal.add(panelBotones, BorderLayout.CENTER);
         return panelPrincipal;
     }
@@ -326,6 +353,10 @@ public class VentanaInterrogar extends JFrame {
         panelFondo.add(panelBoton, BorderLayout.SOUTH);
         dialogo.add(panelFondo);
         dialogo.setVisible(true);
+    }
+
+    public void actualizarContador(int numpreguntas) {
+        lblcontadorpreguntas.setText("Preguntas Restantes: " + numpreguntas);
     }
 
     public Caso getCaso() {

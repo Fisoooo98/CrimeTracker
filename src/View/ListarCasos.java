@@ -96,19 +96,26 @@ public class ListarCasos extends JFrame {
         descripcion.setFont(new Font("SansSerif", Font.PLAIN, 13));
         panel.add(descripcion, BorderLayout.CENTER);
 
-        JPanel panelInferior = new JPanel(new BorderLayout());
+        // Panel inferior para los datos organizados en línea
+        JPanel panelInferior = new JPanel(new FlowLayout(FlowLayout.LEFT, 25, 0));
         panelInferior.setOpaque(false);
 
         JLabel estado = new JLabel("ESTADO: " + caso.getEstado());
         estado.setForeground(TEXT_COLOR);
         estado.setFont(new Font("Monospaced", Font.PLAIN, 13));
-        panelInferior.add(estado, BorderLayout.WEST);
+        panelInferior.add(estado);
+
+        // Dificultad insertada en el centro de la fila
+        JLabel dificultad = new JLabel("DIFICULTAD: " + caso.getDificultad());
+        dificultad.setForeground(TEXT_COLOR);
+        dificultad.setFont(new Font("Monospaced", Font.PLAIN, 13));
+        panelInferior.add(dificultad);
 
         String textoCorrecto = (caso.isCorrecto()) ? "SÍ" : "NO";
         JLabel correcto = new JLabel("CORRECTO: " + textoCorrecto);
         correcto.setForeground(TEXT_COLOR);
         correcto.setFont(new Font("Monospaced", Font.PLAIN, 13));
-        panelInferior.add(correcto, BorderLayout.EAST);
+        panelInferior.add(correcto);
 
         panel.add(panelInferior, BorderLayout.SOUTH);
 

@@ -62,15 +62,26 @@ public class JuegoController {
     public void interrogar(String pregunta,int id_sospechoso,VentanaInterrogar ventanaInterrogar){
         Caso caso = casoService.obtenerCasoActivo();
         if (caso.getEstado() != Estado.RESUELTO){
-            //Logica
-            ResultadoPregunta rs = juegoService.preguntarSospechoso(pregunta,id_sospechoso,caso.getId_caso());
-            //Actualizar texto
-            ventanaInterrogar.actualizarTextoDialogo(rs.getNombreSospechoso() + ": " + rs.getRespuesta());
+            if (caso.getContador_preguntas() >= 0){
+                //Logica
+                ResultadoPregunta rs = juegoService.preguntarSospechoso(pregunta,id_sospechoso,caso.getId_caso());
 
+                //Actualizar texto
+                ventanaInterrogar.actualizarTextoDialogo(rs.getNombreSospechoso() + ": " + rs.getRespuesta());
 
-            //Lanzar ventana de que has obtenido una pista nueva
-            if(rs.isPistaObtenida()){
-                ventanaInterrogar.mostrarDialogo("Has obtenido una pista");
+                //Lanzar ventana de que has obtenido una pista nueva
+                if(rs.isPistaObtenida()){
+                    ventanaInterrogar.mostrarDialogo("Has obtenido una pista");
+                }
+                //Lanzar una ventana de que ha obtenido una evidencia
+                if (rs.isEvidenciaObtenida()){
+                    ventanaInterrogar.mostrarDialogo("Has obtenido una evidencia");
+                }
+                //Actualizar el contador
+                juegoService.actualizarContadorPreguntas(caso.getId_caso(),caso.getContador_preguntas() - 1);
+                ventanaInterrogar.actualizarContador(caso.getContador_preguntas());
+            }else{
+                ventanaInterrogar.mostrarDialogo("No tienes mas preguntas");
             }
         }else{
             ventanaInterrogar.mostrarDialogo("No puedes hacer eso el caso ya esta cerrado");

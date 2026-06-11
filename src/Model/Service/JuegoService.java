@@ -9,12 +9,14 @@ import Model.Entities.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 public class JuegoService {
     private final InvestigacionDAO investigacionDAO = new InvestigacionDAO();
     private final InventarioDAO inventarioDAO = new InventarioDAO();
     private final SospechosoDAO sospechosoDAO =  new SospechosoDAO();
     private final CasoDAO casoDAO = new CasoDAO();
+    Random random = new Random();
 
     //Obtienes todas las preguntas de un sospechoso
     public List<String> InterrogarSospechoso(int id_sospechoso,int id_caso) {
@@ -58,19 +60,28 @@ public class JuegoService {
         HashMap<String, String> preguntasYrespuestas = sospechosoDAO.obtenerPreguntasYrespuestas(id_sospechoso,pistas);
         String respuestaSospechoso = preguntasYrespuestas.get(textoPregunta);
         String nombre_sospechoso = sospechosoDAO.obtenerSospechosoPorId(id_sospechoso).getNombre();
+        boolean evidenciaObtenida = desbloquearEvidencia(id_caso);
         //Retornamos el resultado adquirido
-        return new ResultadoPregunta(respuestaSospechoso, nuevaPista,textoPista,nombre_sospechoso,idPista);
+        return new ResultadoPregunta(respuestaSospechoso, nuevaPista,textoPista,nombre_sospechoso,idPista,evidenciaObtenida);
     }
 
-    //Obtienes las pistas que sabes sobre el caso
-    public List<String> obtenerPistas(int id_caso){
-        List<Integer> pistas = inventarioDAO.leerPistas(id_caso);
-        List<String> textoPistas = new ArrayList<>();
-        for (Integer pista : pistas) {
-            String texto_pista = inventarioDAO.obtenerPistaPorId(pista).getTexto();
-            textoPistas.add(texto_pista);
+    //Lanzar prob de evidencias
+    public boolean desbloquearEvidencia(int idcaso){
+        //Meter probabilidad
+        double probabilidad = (double) casoDAO.obtenerCasoPorId(idcaso).getProbEvidencia() / 100;
+        //Meter todas las preguntas no desbloqueadas en una lista
+        List<Evidencia> evidenciasNoDesbloqueadas = investigacionDAO.obtenerEvidenciasPorCasoNoDesbloqueadas(idcaso);
+        if (random.nextDouble() < probabilidad && !evidenciasNoDesbloqueadas.isEmpty()) {
+            //Desbloquear una evidencia random que este en la lista
+            int indexEvidencia = random.nextInt(0, evidenciasNoDesbloqueadas.size());
+            int id_evidencia = evidenciasNoDesbloqueadas.get(indexEvidencia).getId_evidencia();
+            //Metemos esta evidencia como true
+            investigacionDAO.actualizarEvidencia(id_evidencia,idcaso,true);
+
+            return true;
+        }else{
+            return false;
         }
-        return textoPistas;
     }
 
     //Acusas al sospechoso si devuelve false has perdido si devuelve true has ganado
@@ -90,18 +101,7 @@ public class JuegoService {
         return investigacionDAO.leerNota(id_caso);
     }
 
-    //Miras las evidencias que hay en el caso
-    public List<Evidencia> verEvidencias(int id_caso) {
-         return investigacionDAO.obtenerEvidenciasPorCaso(id_caso);
-    }
-
-    //Obtenemos los sospechosos por caso
-    public List<Sospechoso> obtenerSospechososDelCaso(int id_caso) {
-        return sospechosoDAO.obtenerSospechososPorCaso(id_caso);
-    }
-
-    //Obtenemos la descripcion y el nombre del caso
-    public Caso obtenerDetallesCaso(int id_caso) {
-        return casoDAO.obtenerCasoPorId(id_caso);
+    public void actualizarContadorPreguntas(int id_caso,int preguntas) {
+        casoDAO.actualizarPreguntasRestantes(id_caso,preguntas);
     }
 }

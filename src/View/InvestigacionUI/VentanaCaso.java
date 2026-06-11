@@ -125,7 +125,6 @@ public class VentanaCaso extends JFrame {
 
 
         //Panel lateral Sur
-
         JPanel lateralSur = new JPanel();
         lateralSur.setLayout(new BoxLayout(lateralSur, BoxLayout.Y_AXIS));
         lateralSur.setBackground(PANEL_BG);
@@ -153,6 +152,14 @@ public class VentanaCaso extends JFrame {
         lblPistas.setAlignmentX(Component.LEFT_ALIGNMENT);
         lateralSur.add(lblPistas);
 
+        lateralSur.add(Box.createVerticalStrut(6));
+
+        // Información de dificultad agregada aquí
+        JLabel lblDificultad = new JLabel("Dificultad: " + casoActual.getDificultad());
+        lblDificultad.setForeground(TEXT_WHITE);
+        lblDificultad.setFont(new Font("SansSerif", Font.PLAIN, 13));
+        lblDificultad.setAlignmentX(Component.LEFT_ALIGNMENT);
+        lateralSur.add(lblDificultad);
 
 
         lateral.add(lateralNorte);

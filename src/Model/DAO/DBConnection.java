@@ -23,8 +23,11 @@ public class DBConnection {
                          id_caso INTEGER PRIMARY KEY AUTOINCREMENT,
                          titulo TEXT NOT NULL,
                          descripcion TEXT,
+                         contador_preguntas INTEGER default 5,
+                         probevidencia INTEGER default 50,
                          jugando_ahora boolean default false,
                          estado TEXT NOT NULL DEFAULT 'NORESUELTO',
+                         dificultad TEXT NOT NULL DEFAULT 'NOSELECCIONADO',
                          texto_notas TEXT DEFAULT '',
                          correcto BOOLEAN DEFAULT 0
                  );
@@ -83,6 +86,7 @@ public class DBConnection {
                 CREATE TABLE IF NOT EXISTS Evidencias (
                     id_evidencia INTEGER PRIMARY KEY AUTOINCREMENT,
                     texto_evidencia TEXT NOT NULL,
+                    desbloqueada BOOLEAN DEFAULT 0,
                     id_caso INTEGER,
                     FOREIGN KEY (id_caso) REFERENCES Casos(id_caso) ON DELETE CASCADE
                 );

@@ -18,7 +18,6 @@ public class MenuController {
         System.out.println("Acceder al Caso");
         Caso casoActivo = casoService.obtenerCasoActivo();
         if (casoActivo != null) {
-            //Si hay una ventana antes abierta la cerramos
             if (ventanaActual != null) {
                 ventanaActual.dispose();
             }

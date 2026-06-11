@@ -9,9 +9,12 @@ public class Caso implements Comparable<Caso>{
     private List<Sospechoso> sospechosos;
     private List<Evidencia> evidencias;
     private List<Pista> pistas;
+    private int probEvidencia;
     private String notas;
     private Estado estado;
+    private Dificultad  dificultad;
     private boolean correcto;
+    private int contador_preguntas;
     public Caso(int id_caso, String nombre, String descripcion,String notas) {
         this.id_caso = id_caso;
         this.nombre = nombre;
@@ -100,6 +103,29 @@ public class Caso implements Comparable<Caso>{
         this.sospechosos = sospechosos;
     }
 
+    public int getContador_preguntas() {
+        return contador_preguntas;
+    }
+
+    public void setContador_preguntas(int contador_preguntas) {
+        this.contador_preguntas = contador_preguntas;
+    }
+
+    public int getProbEvidencia() {
+        return probEvidencia;
+    }
+
+    public void setProbEvidencia(int probEvidencia) {
+        this.probEvidencia = probEvidencia;
+    }
+
+    public Dificultad getDificultad() {
+        return dificultad;
+    }
+
+    public void setDificultad(Dificultad dificultad) {
+        this.dificultad = dificultad;
+    }
 
     @Override
     public String toString() {
@@ -124,6 +150,8 @@ public class Caso implements Comparable<Caso>{
                 this.sospechosos != null ? this.sospechosos.size() : 0
         );
     }
+
+
 
     @Override
     public int compareTo(Caso o) {

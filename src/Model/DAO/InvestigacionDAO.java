@@ -54,7 +54,7 @@ public class InvestigacionDAO {
     }
 
     public List<Evidencia> obtenerEvidenciasPorCaso(int idcaso) {
-        String sql = "SELECT * FROM Evidencias WHERE id_caso = ?";
+        String sql = "SELECT * FROM Evidencias WHERE id_caso = ? and desbloqueada = 1";
         List<Evidencia> evidencias = new ArrayList<>();
         try(
                 Connection connection = DriverManager.getConnection(url);
@@ -73,6 +73,45 @@ public class InvestigacionDAO {
             throw new RuntimeException(ex);
         }
         return evidencias;
+    }
+
+    public List<Evidencia> obtenerEvidenciasPorCasoNoDesbloqueadas(int idcaso) {
+        String sql = "SELECT * FROM Evidencias WHERE id_caso = ? and desbloqueada = 0";
+        List<Evidencia> evidencias = new ArrayList<>();
+        try(
+                Connection connection = DriverManager.getConnection(url);
+                PreparedStatement ps = connection.prepareStatement(sql)
+        ){
+            ps.setInt(1, idcaso);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                evidencias.add(new Evidencia(
+                        rs.getInt("id_caso"),
+                        rs.getInt("id_evidencia"),
+                        rs.getString("texto_evidencia")
+                ));
+            }
+        }catch(SQLException ex){
+            throw new RuntimeException(ex);
+        }
+        return evidencias;
+    }
+
+    public int actualizarEvidencia(int id_evidencia,int id_caso,boolean desbloqueda) {
+        String sql = "Update Evidencias set desbloqueada = ? where id_caso = ? and  id_evidencia = ?";
+        int res;
+        try(
+                Connection connection = DriverManager.getConnection(url);
+                PreparedStatement ps = connection.prepareStatement(sql)
+        ){
+            ps.setBoolean(1, desbloqueda);
+            ps.setInt(2, id_caso);
+            ps.setInt(3, id_evidencia);
+            res = ps.executeUpdate();
+        }catch(SQLException ex){
+            throw new RuntimeException(ex);
+        }
+        return res;
     }
     public Pista obtenerPistasPorId(int id_pista) {
         String sql = "SELECT * FROM Pistas WHERE id_pista = ?";

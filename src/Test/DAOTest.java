@@ -5,6 +5,7 @@ import Model.DAO.InvestigacionDAO;
 import Model.DAO.DBConnection;
 import Model.DAO.SospechosoDAO;
 import Model.Entities.Caso;
+import Model.Entities.Dificultad;
 import Model.Entities.Estado;
 import Model.Entities.Sospechoso;
 
@@ -36,6 +37,19 @@ public class DAOTest {
         System.out.println(sospechoso1.getNombre() + ": " + PYRSospechoso1.get("¿Dónde se encontraba usted en el momento del crimen?"));
         System.out.println("Sospechoso caso2");
         System.out.println(sospechosoDAO.obtenerSospechososPorCaso(2));
+
+        System.out.println("Prueba de preguntas restantes");
+        casoDAO.actualizarPreguntasRestantes(1,5);
+        System.out.println(casoDAO.obtenerCasoPorId(1).getContador_preguntas());
+
+        System.out.println("Prueba de obtnener evidenicas");
+        investigacionDAO.actualizarEvidencia(1,1,true);
+        System.out.println(investigacionDAO.obtenerEvidenciasPorCaso(1).size());
+        System.out.println(casoDAO.obtenerCasoPorId(1).getProbEvidencia());
+        System.out.println("Prueva dificultad");
+        System.out.println(casoDAO.actualizarDificultad(1, Dificultad.NORMAL));
+        System.out.println(casoDAO.obtenerCasoPorId(1).getProbEvidencia());
+
 
 
 
