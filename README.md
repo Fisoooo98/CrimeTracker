@@ -49,7 +49,7 @@ Abre el proyecto en tu IDE de preferencia (IntelliJ IDEA, NetBeans, Eclipse).
 
 Ejecuta la clase principal encargada de lanzar el hilo de la interfaz gráfica (java.awt.EventQueue.invokeLater).
 
-##🎮 Guía de Uso / Cómo Jugar
+## 🎮 Guía de Uso / Cómo Jugar
 Aceptar un Caso: Accede a la ventana VerCasos, examina los expedientes disponibles y selecciona uno. Antes de comenzar, deberás elegir el nivel de dificultad. A mayor dificultad, menor será el número de preguntas iniciales permitidas y más baja la probabilidad de descubrir evidencias automáticamente.
 
 Iniciar la Investigación: Entra al panel de interrogatorios. Dispones de un contador limitado de preguntas. Utiliza tu lógica para interrogar a los sospechosos disponibles.
