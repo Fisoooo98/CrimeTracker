@@ -1,6 +1,7 @@
 package Model.DAO;
 
 import Model.Entities.Caso;
+import Model.Entities.Config;
 import Model.Entities.Dificultad;
 import Model.Entities.Estado;
 
@@ -154,6 +155,42 @@ public class CasoDAO {
         return casos;
     }
 
+
+    //Te muestra los casos segun si el usuario los ha acertado o no.
+    public List<Caso> obtenerCasosPorDificultad(Dificultad dificultad) {
+        List<Caso> casos = new ArrayList<>();
+        Caso caso = null;
+        String sql = "SELECT * FROM Casos WHERE dificultad = ?";
+        try(
+                Connection connection = DriverManager.getConnection(url);
+                PreparedStatement ps = connection.prepareStatement(sql);
+        ) {
+            ps.setString(1, dificultad.name());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                caso = new Caso(
+                        rs.getInt("id_caso"),
+                        rs.getString("titulo"),
+                        rs.getString("descripcion"),
+                        rs.getString("texto_notas")
+                );
+                caso.setCorrecto(rs.getBoolean("correcto"));
+                caso.setEstado(Estado.valueOf(rs.getString("estado")));
+                caso.setDificultad(Dificultad.valueOf(rs.getString("dificultad")));
+                caso.setContador_preguntas(rs.getInt("contador_preguntas"));
+                caso.setProbEvidencia(rs.getInt("probEvidencia"));
+                casos.add(caso);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        //Cargar los sospechosos
+        for (Caso c : casos) {
+            c.setSospechosos(sospechosoDAO.obtenerSospechososPorCaso(c.getId_caso()));
+        }
+        return casos;
+    }
+
     //Actualiza el estado del caso
     public int actualizarEstadoCaso(int id_caso,Estado estado) {
         String sql = "UPDATE Casos SET estado = ? WHERE id_caso = ?";
@@ -234,16 +271,16 @@ public class CasoDAO {
         int res;
        switch (dificultad) {
            case FACIL ->  {
-               probEvidencia = 50;
-               numpreguntas = 7;
+               probEvidencia = Config.probEvidenciasFacil;
+               numpreguntas = Config.contPreguntasFacil;
            }
            case NORMAL ->   {
-               probEvidencia = 25;
-               numpreguntas = 5;
+               probEvidencia = Config.probEvidenciasNormal;
+               numpreguntas = Config.contPreguntasNormal;
            }
            case DIFICIL ->   {
-               probEvidencia = 20;
-               numpreguntas = 3;
+               probEvidencia = Config.probEvidenciasDificil;
+               numpreguntas = Config.contPreguntasDificil;
            }
        }
        String sql  = "UPDATE Casos SET dificultad = ?,probevidencia = ?,contador_preguntas = ? WHERE id_caso = ?";

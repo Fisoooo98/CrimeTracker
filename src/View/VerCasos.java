@@ -22,7 +22,7 @@ public class VerCasos extends JFrame {
     public VerCasos() {
         setTitle("Ver Casos");
 
-        setSize(600, 650);
+        setSize(1000, 650);
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -64,7 +64,6 @@ public class VerCasos extends JFrame {
                 .toList();
 
         JPanel panelCasos = new JPanel();
-        System.out.println(casos);
 
         panelCasos.setBackground(MAIN_BG_COLOR);
 

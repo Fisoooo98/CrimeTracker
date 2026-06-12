@@ -1,12 +1,14 @@
 package Controller;
 
 import Model.Entities.Caso;
+import Model.Entities.ResultadoPerfil;
 import Model.Service.CasoService;
 import Model.Service.JuegoService;
 import View.InvestigacionUI.VentanaCaso;
 import View.ListarCasos;
 import View.MenuPrincipal;
 import View.VerCasos;
+import View.VistaPerfil;
 
 import javax.swing.*;
 
@@ -15,7 +17,6 @@ public class MenuController {
     private final CasoService casoService = new CasoService();
 
     public void accederAlCaso(MenuPrincipal menuPrincipal) {
-        System.out.println("Acceder al Caso");
         Caso casoActivo = casoService.obtenerCasoActivo();
         if (casoActivo != null) {
             if (ventanaActual != null) {
@@ -40,6 +41,16 @@ public class MenuController {
         }
 
         ventanaActual = new VerCasos();
+        ventanaActual.setLocationRelativeTo(null);
+        ventanaActual.setVisible(true);
+    }
+
+    public void accederAlPerfil(){
+        if (ventanaActual != null) {
+            ventanaActual.dispose();
+        }
+        ResultadoPerfil resultadoPerfil = casoService.obtenerPerfil();
+        ventanaActual = new VistaPerfil(resultadoPerfil);
         ventanaActual.setLocationRelativeTo(null);
         ventanaActual.setVisible(true);
     }

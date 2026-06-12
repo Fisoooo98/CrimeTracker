@@ -127,31 +127,6 @@ public class Caso implements Comparable<Caso>{
         this.dificultad = dificultad;
     }
 
-    @Override
-    public String toString() {
-        return String.format(
-                """
-                ==================================================
-                📂 CASO Nº %d: %s
-                ==================================================
-                📝 DESCRIPCIÓN: %s
-                🚦 ESTADO:      [%s]
-                🎯 ¿ACERTADO?:  %s
-                📌 NOTAS:       %s
-                👥 SOSPECHOSOS: %d cargados en memoria
-                ==================================================
-                """,
-                this.id_caso,
-                this.nombre != null ? this.nombre.toUpperCase() : "SIN TÍTULO",
-                this.descripcion != null ? this.descripcion : "Sin descripción disponible.",
-                this.estado,
-                this.correcto ? "✅ SÍ" : "❌ NO",
-                (this.notas != null && !this.notas.isEmpty()) ? this.notas : "Ninguna nota guardada.",
-                this.sospechosos != null ? this.sospechosos.size() : 0
-        );
-    }
-
-
 
     @Override
     public int compareTo(Caso o) {
@@ -159,4 +134,5 @@ public class Caso implements Comparable<Caso>{
         else if (id_caso < o.id_caso) return -1;
         else return 0;
     }
+
 }

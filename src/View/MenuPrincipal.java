@@ -58,6 +58,7 @@ public class MenuPrincipal extends JFrame {
         String[] textos = {
                 "<html><center>Ver Casos</center></html>",
                 "<html><center>Iniciar Investigación</center></html>",
+                "<html><center>Ver Perfil</center></html>",
                 "<html><center>Listar Casos Resueltos</center></html>",
                 "<html><center>Salir</center></html>"
         };
@@ -105,7 +106,6 @@ public class MenuPrincipal extends JFrame {
             String texto = btn.getText();
 
             if (texto.contains("Ver Casos")) {
-                System.out.println("Has pulsado Ver Casos");
                 menuController.accederAVentanaCasos();
             }
 
@@ -113,13 +113,15 @@ public class MenuPrincipal extends JFrame {
                 menuController.accederAlCaso(this);
             }
 
+            else if (texto.contains("Ver Perfil")) {
+                menuController.accederAlPerfil();
+            }
+
             else if (texto.contains("Listar Casos Resueltos")) {
-                System.out.println("Has pulsado Listar Casos Resueltos");
                 menuController.accederAListarCasos();
             }
 
             else if (texto.contains("Salir")) {
-                System.out.println("Has pulsado Salir");
                 System.exit(0);
             }
 

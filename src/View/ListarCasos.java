@@ -96,7 +96,7 @@ public class ListarCasos extends JFrame {
         descripcion.setFont(new Font("SansSerif", Font.PLAIN, 13));
         panel.add(descripcion, BorderLayout.CENTER);
 
-        // Panel inferior para los datos organizados en línea
+
         JPanel panelInferior = new JPanel(new FlowLayout(FlowLayout.LEFT, 25, 0));
         panelInferior.setOpaque(false);
 
@@ -105,7 +105,7 @@ public class ListarCasos extends JFrame {
         estado.setFont(new Font("Monospaced", Font.PLAIN, 13));
         panelInferior.add(estado);
 
-        // Dificultad insertada en el centro de la fila
+
         JLabel dificultad = new JLabel("DIFICULTAD: " + caso.getDificultad());
         dificultad.setForeground(TEXT_COLOR);
         dificultad.setFont(new Font("Monospaced", Font.PLAIN, 13));
