@@ -61,3 +61,16 @@ Bloc de Notas: Utiliza el sistema de notas integrado para apuntar teorías, cont
 Emitir el Veredicto: Cuando te quedes sin preguntas o tengas la certeza de quién es el culpable, dirígete al panel de acusación para señalar al asesino. Si aciertas, el caso pasará a estado Resuelto y sumarás puntos a tu expediente.
 
 Consultar Perfil: Revisa la ventana Perfil para comprobar tu puntuación total acumulada y ver si has ascendido en el escalafón de los Tiers de detectives.
+
+## 📸 Capturas de Pantalla
+### Ver Casos Disponibles
+![Menú Principal de Crime Tracker](img/img1.png)
+
+### Panel Caso
+![Panel Caso](img/img2.png)
+
+### Panel Interrogario
+![Panel Interrogario](img/img3.png)
+
+### Panel Perfil
+![Panel Perfil](img/img4.png)
