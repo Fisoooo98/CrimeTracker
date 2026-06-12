@@ -212,9 +212,9 @@ public class VerCasos extends JFrame {
 
         String[] dificultades = {"FACIL", "NORMAL", "DIFICIL"};
         String[] descripciones = {
-                "<html><center>Más preguntas disponibles y pistas claras.</center></html>",
-                "<html><center>Cantidad estándar de preguntas y sospechas equilibradas.</center></html>",
-                "<html><center>Preguntas muy limitadas. Un verdadero reto.</center></html>"
+                "<html><center>Más preguntas disponibles y mas prob de obtener evidencias.</center></html>",
+                "<html><center>Cantidad estandar de preguntas y menos prob de obtener evidencias.</center></html>",
+                "<html><center>Preguntas muy limitadas.Un verdadero reto.</center></html>"
         };
 
         for (int i = 0; i < dificultades.length; i++) {
