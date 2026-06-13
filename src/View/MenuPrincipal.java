@@ -13,8 +13,6 @@ import java.awt.*;
  * Sirve como eje central para navegar a las distintas pantallas de la aplicación.
  */
 public class MenuPrincipal extends JFrame {
-    CasoService casoService = new CasoService();
-
     // Colores de la interfaz
     private static final Color MAIN_BG_COLOR = new Color(24, 24, 24);
     private static final Color PANEL_BG_COLOR = new Color(36, 36, 36);
@@ -56,7 +54,7 @@ public class MenuPrincipal extends JFrame {
         panel.setBorder(BorderFactory.createEmptyBorder(20, 80, 40, 80));
 
         String[] textos = {
-                "<html><center>Ver Casos</center></html>",
+                "<html><center>Seleccionar Caso</center></html>",
                 "<html><center>Iniciar Investigación</center></html>",
                 "<html><center>Ver Perfil</center></html>",
                 "<html><center>Listar Casos Resueltos</center></html>",
@@ -73,7 +71,7 @@ public class MenuPrincipal extends JFrame {
     /**
      * Crea un botón personalizado con efectos visuales de selección y gestor de eventos de clic.
      * * @param textoHtml El texto del botón, formateado en HTML para centrarlo.
-     * @return El botón configurado en formato {@link JButton}.
+     * @return El botón configurado en formato JButton.
      */
     private JButton crearBoton(String textoHtml) {
         JButton btn = new JButton(textoHtml);
@@ -105,7 +103,7 @@ public class MenuPrincipal extends JFrame {
         btn.addActionListener(e -> {
             String texto = btn.getText();
 
-            if (texto.contains("Ver Casos")) {
+            if (texto.contains("Seleccionar Caso")) {
                 menuController.accederAVentanaCasos();
             }
             else if (texto.contains("Iniciar Investigación")) {

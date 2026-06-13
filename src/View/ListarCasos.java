@@ -27,7 +27,7 @@ public class ListarCasos extends JFrame {
      */
     public ListarCasos() {
         setTitle("Listar Casos Resueltos");
-        setSize(600, 650);
+        setSize(850, 650);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         getContentPane().setBackground(MAIN_BG_COLOR);

@@ -82,7 +82,7 @@ public class CasoService {
        }
 
        return new ResultadoPerfil(contadorResueltosDificiles,contadorResueltosFaciles,contadorResueltosNormales,puntuacion,
-               tierperfil,contadorTotalDificiles,contadorTotalNormales,contadorTotalFaciles);
+               tierperfil,contadorTotalDificiles,contadorTotalFaciles,contadorTotalNormales);
     }
 
     /**

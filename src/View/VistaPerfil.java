@@ -133,7 +133,7 @@ public class VistaPerfil extends JFrame {
             //Casos Resueltos
             gbc.gridwidth = 1;
             gbc.gridy = fila;
-            gbc.insets = new Insets(0, 10, 4, 0);
+            gbc.insets = new Insets(0, 10, 24, 0);
 
             JLabel lblResueltosTitulo = new JLabel("Casos resueltos");
             lblResueltosTitulo.setForeground(TEXT_COLOR);
@@ -142,7 +142,6 @@ public class VistaPerfil extends JFrame {
 
             gbc.gridx = 0;
             gbc.gridy = fila;
-            gbc.insets = new Insets(0, 10, 20, 0);
 
             int casosResueltos = 0;
             int casosTotales = 0;
