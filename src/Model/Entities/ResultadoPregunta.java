@@ -6,15 +6,13 @@ public class ResultadoPregunta {
     private final boolean pistaObtenida;
     private boolean evidenciaObtenida;
     private final String textoPista;
-    private int id_pista;
 
 
-    public ResultadoPregunta(String respuesta, boolean pistaObtenida, String textoPista,String nombreSospechoso,int id_pista,boolean evidenciaObtenida) {
+    public ResultadoPregunta(String respuesta, boolean pistaObtenida, String textoPista,String nombreSospechoso,boolean evidenciaObtenida) {
         this.respuesta = respuesta;
         this.pistaObtenida = pistaObtenida;
         this.textoPista = textoPista;
         this.nombreSospechoso = nombreSospechoso;
-        this.id_pista = id_pista;
         this.evidenciaObtenida = evidenciaObtenida;
     }
 
@@ -24,23 +22,13 @@ public class ResultadoPregunta {
     public boolean isPistaObtenida() {
         return pistaObtenida;
     }
-    public String getTextoPista() {
-        return textoPista;
-    }
+
     public String getNombreSospechoso() {
         return nombreSospechoso;
     }
 
-    public int getId_pista() {
-        return id_pista;
-    }
-
     public boolean isEvidenciaObtenida() {
         return evidenciaObtenida;
-    }
-
-    public void setEvidenciaObtenida(boolean evidenciaObtenida) {
-        this.evidenciaObtenida = evidenciaObtenida;
     }
 
     @Override

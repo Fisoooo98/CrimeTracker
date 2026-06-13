@@ -14,6 +14,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Pantalla del juego para interrogar a los sospechosos y lanzar acusaciones.
+ */
 public class VentanaInterrogar extends JFrame {
     private Caso caso;
     private VentanaCaso ventanaCaso;
@@ -25,6 +28,7 @@ public class VentanaInterrogar extends JFrame {
     private Sospechoso sospechosoActual;
     private JuegoController juegoController;
     private JPanel panelPreguntasActual;
+
     // Colores de la interfaz
     private static final Color MAIN_BG_COLOR = new Color(24, 24, 24);
     private static final Color PANEL_BG_COLOR = new Color(36, 36, 36);
@@ -32,7 +36,13 @@ public class VentanaInterrogar extends JFrame {
     private static final Color TEXT_COLOR = new Color(240, 240, 240);
     private static final Color TITLE_COLOR = new Color(200, 210, 220);
 
-    public VentanaInterrogar(Caso caso,VentanaCaso ventanaCaso,JuegoController juegoController) {
+    /**
+     * Abre la ventana de interrogatorios y carga los datos del caso.
+     * * @param caso El caso que se va a investigar.
+     * @param ventanaCaso La ventana anterior para actualizarla al salir.
+     * @param juegoController El controlador que maneja los botones de esta ventana.
+     */
+    public VentanaInterrogar(Caso caso, VentanaCaso ventanaCaso, JuegoController juegoController) {
         this.caso = caso;
         this.ventanaCaso = ventanaCaso;
         this.juegoController = juegoController;
@@ -49,17 +59,18 @@ public class VentanaInterrogar extends JFrame {
         actualizarTextoDialogo("Selecciona a un sospechoso para comenzar el interrogatorio...");
     }
 
+    /**
+     * Mete el título, los sospechosos y la barra inferior en la ventana.
+     */
     public void initComponents() {
         add(PanelInferior(), BorderLayout.SOUTH);
-
         add(crearPanelSospechosos(caso.getSospechosos()), BorderLayout.CENTER);
-
         add(crearTitulo(), BorderLayout.NORTH);
-
     }
 
-
-
+    /**
+     * Crea el texto del título principal arriba en la ventana.
+     */
     public JPanel crearTitulo() {
         JPanel panelTitulo = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 20));
         panelTitulo.setBackground(MAIN_BG_COLOR);
@@ -73,6 +84,10 @@ public class VentanaInterrogar extends JFrame {
         return panelTitulo;
     }
 
+    /**
+     * Crea los botones con las fotos y nombres de los sospechosos.
+     * * @param listaSospechosos Lista con todos los sospechosos del caso.
+     */
     public JPanel crearPanelSospechosos(List<Sospechoso> listaSospechosos) {
         JPanel panelContenedor = new JPanel(new FlowLayout(FlowLayout.CENTER, 40, 50));
         panelContenedor.setBackground(MAIN_BG_COLOR);
@@ -83,25 +98,21 @@ public class VentanaInterrogar extends JFrame {
             JButton botonSospechoso = new JButton();
             botonSospechoso.setLayout(new BorderLayout(0, 10));
 
-            //Boton que para seleccionar al sospechoso
             botonSospechoso.setPreferredSize(new Dimension(220, 280));
             botonSospechoso.setBackground(PANEL_BG_COLOR);
             botonSospechoso.setBorder(BorderFactory.createLineBorder(BORDER_COLOR, 3));
             botonSospechoso.setFocusPainted(false);
             botonSospechoso.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-            //Nombre del sospechoso
             JLabel lblNombre = new JLabel(sospechoso.getNombre(), SwingConstants.CENTER);
-            lblNombre.setFont(new Font("Monospaced", Font.BOLD, 18)); // Fuente más grande
+            lblNombre.setFont(new Font("Monospaced", Font.BOLD, 18));
             lblNombre.setForeground(TEXT_COLOR);
             lblNombre.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
 
-            //Silueta
             JLabel lblIcono = new JLabel(iconoSilueta, SwingConstants.CENTER);
             botonSospechoso.add(lblNombre, BorderLayout.NORTH);
             botonSospechoso.add(lblIcono, BorderLayout.CENTER);
 
-            //Listener para acceder al sospechoso
             final Sospechoso sospechosoActual = sospechoso;
             botonSospechoso.addActionListener(e -> {
                 actualizarTextoDialogo("Estás interrogando a " + sospechosoActual.getNombre() + "... ¿Qué tiene que ocultar?");
@@ -111,15 +122,12 @@ public class VentanaInterrogar extends JFrame {
                 }
 
                 this.panelPreguntasActual = panelPreguntas(sospechosoActual.getId_sospechoso(), caso.getId_caso());
-
                 add(this.panelPreguntasActual, BorderLayout.EAST);
-
                 this.sospechosoActual = sospechosoActual;
 
                 revalidate();
                 repaint();
             });
-
 
             panelContenedor.add(botonSospechoso);
         }
@@ -127,13 +135,16 @@ public class VentanaInterrogar extends JFrame {
         return panelContenedor;
     }
 
+    /**
+     * Dibuja la silueta negra con ojos maliciosos para el botón del sospechoso.
+     */
     private static ImageIcon generarIconoSospechoso(int ancho, int alto) {
         Image img = new java.awt.image.BufferedImage(ancho, alto, java.awt.image.BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2 = (Graphics2D) img.getGraphics();
 
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        // --- Cuerpo ---
+        //Cuerpo
         g2.setColor(Color.BLACK);
         int cuerpoAncho = (int) (ancho * 0.85);
         int cuerpoAlto = (int) (alto * 0.55);
@@ -141,13 +152,13 @@ public class VentanaInterrogar extends JFrame {
         int cuerpoY = alto - cuerpoAlto - 10;
         g2.fill(new RoundRectangle2D.Float(cuerpoX, cuerpoY, cuerpoAncho, cuerpoAlto, 50, 50));
 
-        // --- Cabeza ---
+        //Cabeza
         int cabezaDiametro = (int) (ancho * 0.55);
         int cabezaX = (ancho - cabezaDiametro) / 2;
         int cabezaY = (int) (cuerpoY - cabezaDiametro * 0.82);
         g2.fill(new Ellipse2D.Float(cabezaX, cabezaY, cabezaDiametro, cabezaDiametro));
 
-        // --- Ojos Maliciosos (Escalados proporcionalmente al nuevo tamaño) ---
+        //Ojos Maliciosos
         g2.setColor(Color.WHITE);
         int centroCabezaX = cabezaX + (cabezaDiametro / 2);
         int centroCabezaY = cabezaY + (cabezaDiametro / 2);
@@ -164,22 +175,20 @@ public class VentanaInterrogar extends JFrame {
         return new ImageIcon(img);
     }
 
-
+    /**
+     * Crea el panel inferior con el contador de preguntas y los botones de Acusar y Salir.
+     */
     public JPanel PanelInferior() {
-
-        //Panel inferior
         JPanel panelinferior = new JPanel();
         panelinferior.setLayout(new BorderLayout());
         panelinferior.setBackground(MAIN_BG_COLOR);
 
-        //Panel Log
         JPanel panelLog = new JPanel();
         panelLog.setLayout(new BorderLayout());
         panelLog.setBackground(PANEL_BG_COLOR);
         panelLog.setBorder(BorderFactory.createLineBorder(BORDER_COLOR, 4));
         panelLog.setPreferredSize(new Dimension(1100, 120));
 
-        //Titulo
         int contador = caso.getContador_preguntas();
         lblcontadorpreguntas = new JLabel("Preguntas Restantes: " + contador);
         lblcontadorpreguntas.setFont(new Font("Monospaced", Font.BOLD, 23));
@@ -194,7 +203,6 @@ public class VentanaInterrogar extends JFrame {
         JPanel panelBotonesAccion = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 35));
         panelBotonesAccion.setBackground(PANEL_BG_COLOR);
 
-        //Botón Acusar
         JButton botonAcusar = new JButton("Acusar");
         botonAcusar.setFont(new Font("Monospaced", Font.BOLD, 14));
         botonAcusar.setBackground(MAIN_BG_COLOR);
@@ -205,12 +213,11 @@ public class VentanaInterrogar extends JFrame {
         botonAcusar.addActionListener(e -> {
             if (this.sospechosoActual == null) {
                 actualizarTextoDialogo("Tienes que acusar a alguien");
-            }else{
-                juegoController.acusar(this.sospechosoActual.getId_sospechoso(),this);
+            } else {
+                juegoController.acusar(this.sospechosoActual.getId_sospechoso(), this);
             }
         });
 
-        //Botón Salir
         JButton botonSalir = new JButton("Salir");
         botonSalir.setFont(new Font("Monospaced", Font.BOLD, 14));
         botonSalir.setBackground(MAIN_BG_COLOR);
@@ -218,13 +225,12 @@ public class VentanaInterrogar extends JFrame {
         botonSalir.setFocusPainted(false);
         botonSalir.setCursor(new Cursor(Cursor.HAND_CURSOR));
         botonSalir.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(BORDER_COLOR, 1), BorderFactory.createEmptyBorder(10, 20, 10, 20)));
-        botonSalir.addActionListener(
-                e ->{
-                    Caso casoActualizado = casoService.obtenerCasoActivo();
-                    ventanaCaso.actualizarPantalla(casoActualizado);
-                    dispose();
-                }
-        );
+        botonSalir.addActionListener(e -> {
+            Caso casoActualizado = casoService.obtenerCasoActivo();
+            ventanaCaso.actualizarPantalla(casoActualizado);
+            dispose();
+        });
+
         panelBotonesAccion.add(botonAcusar);
         panelBotonesAccion.add(botonSalir);
 
@@ -240,8 +246,11 @@ public class VentanaInterrogar extends JFrame {
         return panelinferior;
     }
 
+    /**
+     * Muestra el texto en el cuadro de diálogo simulando una máquina de escribir.
+     * * @param texto El texto completo que se quiere mostrar.
+     */
     public void actualizarTextoDialogo(String texto) {
-
         if (timerActual != null && timerActual.isRunning()) {
             timerActual.stop();
         }
@@ -264,18 +273,18 @@ public class VentanaInterrogar extends JFrame {
 
         timerActual.start();
     }
+
+    /**
+     * Carga las preguntas del sospechoso y las pinta en una lista de botones a la derecha.
+     * * @param id_sospechoso El ID del sospechoso seleccionado.
+     * @param idcaso El ID del caso actual.
+     */
     public JPanel panelPreguntas(int id_sospechoso, int idcaso) {
-
-
         List<String> preguntas = juegoService.InterrogarSospechoso(id_sospechoso, idcaso);
 
-
-        JPanel panelPrincipal = new JPanel(new BorderLayout(10,10));
+        JPanel panelPrincipal = new JPanel(new BorderLayout(10, 10));
         panelPrincipal.setBackground(MAIN_BG_COLOR);
-
         panelPrincipal.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-
-
 
         JPanel panelBotones = new JPanel(new GridLayout(0, 1, 0, 5));
         panelBotones.setBackground(MAIN_BG_COLOR);
@@ -283,7 +292,7 @@ public class VentanaInterrogar extends JFrame {
         for (String pregunta : preguntas) {
             JButton botonPregunta = new JButton(pregunta);
             botonPregunta.setHorizontalAlignment(SwingConstants.LEFT);
-            botonPregunta.setFont(new Font("Monospaced", Font.PLAIN, 12)); // Fuente más pequeña (12)
+            botonPregunta.setFont(new Font("Monospaced", Font.PLAIN, 12));
             botonPregunta.setBackground(PANEL_BG_COLOR);
             botonPregunta.setForeground(TEXT_COLOR);
             botonPregunta.setFocusPainted(false);
@@ -300,13 +309,11 @@ public class VentanaInterrogar extends JFrame {
                 }
             });
 
-            //Listener
             botonPregunta.putClientProperty("preguntaTexto", pregunta);
             botonPregunta.addActionListener(e -> {
                 JButton btn = (JButton) e.getSource();
-                juegoController.interrogar(btn.getText(),id_sospechoso,this);
+                juegoController.interrogar(btn.getText(), id_sospechoso, this);
             });
-
 
             panelBotones.add(botonPregunta);
 
@@ -317,6 +324,10 @@ public class VentanaInterrogar extends JFrame {
         return panelPrincipal;
     }
 
+    /**
+     * Muestra una ventana emergente de aviso con un botón para cerrarla.
+     * * @param texto El mensaje que quieres que lea el usuario.
+     */
     public void mostrarDialogo(String texto) {
         JDialog dialogo = new JDialog(this, "Notificación", true);
         dialogo.setUndecorated(true);
@@ -355,6 +366,10 @@ public class VentanaInterrogar extends JFrame {
         dialogo.setVisible(true);
     }
 
+    /**
+     * Cambia el número de preguntas que quedan y lo muestra en la interfaz.
+     *@param numpreguntas El nuevo número de preguntas restantes.
+     */
     public void actualizarContador(int numpreguntas) {
         lblcontadorpreguntas.setText("Preguntas Restantes: " + numpreguntas);
     }

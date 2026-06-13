@@ -10,11 +10,20 @@ public class CasoController {
 
     CasoService casoService;
     private Caso casoActual;
+
+    /**
+     * Inicializa el controlador de VerCasos
+     */
     public CasoController() {
         this.casoService = new CasoService();
     }
 
-    //Hace que puedas selecionar el caso Actual
+    /**
+     * Funcion para seleccionar un caso, ponerlo en activo y gestion de dificultad
+     * Si no hay dificultad seleccionada, despliega el JDialog correspondiente
+     * @param id_caso caso seleccionado por el usuario
+     * @param verCasos ventana de VerCasos para utilizar dialogos emergentes
+     */
     public void seleccionarCaso(int id_caso, VerCasos  verCasos) {
        if (casoService.obtenerCasoPorId(id_caso).getDificultad() == Dificultad.NOSELECCIONADO){
            verCasos.panelDificultad(id_caso);
@@ -23,16 +32,5 @@ public class CasoController {
         casoService.seleccionarCasoActual(id_caso);
         casoService.actualizarEstadoCaso(Estado.PENDIENTE, id_caso);
         this.casoActual = casoService.obtenerCasoPorId(id_caso);
-
-
-
-    }
-    //Carga el caso activo
-    public Caso cargarCasoActual(){
-        return casoService.obtenerCasoActivo();
-    }
-
-    public Caso getCasoActual() {
-        return casoActual;
     }
 }

@@ -9,14 +9,22 @@ import java.util.List;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Pantalla que muestra una lista con todos los casos que ya han sido resueltos en el juego.
+ */
 public class ListarCasos extends JFrame {
     CasoService casoService = new CasoService();
+
+    // Colores de la interfaz
     private static final Color MAIN_BG_COLOR = new Color(18, 18, 20);
     private static final Color PANEL_BG_COLOR = new Color(26, 26, 30);
     private static final Color BORDER_COLOR = new Color(28, 28, 34);
     private static final Color TEXT_COLOR = new Color(170, 170, 175);
     private static final Color TITLE_COLOR = new Color(245, 240, 230);
 
+    /**
+     * Abre e inicializa la ventana para listar los casos resueltos.
+     */
     public ListarCasos() {
         setTitle("Listar Casos Resueltos");
         setSize(600, 650);
@@ -30,6 +38,9 @@ public class ListarCasos extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Construye los componentes visuales: el título, la lista con scroll para los casos y el botón de salir.
+     */
     public void initComponents() {
         JLabel titulo = new JLabel("CASOS RESUELTOS", SwingConstants.CENTER);
         titulo.setForeground(TITLE_COLOR);
@@ -37,6 +48,7 @@ public class ListarCasos extends JFrame {
         titulo.setBorder(BorderFactory.createEmptyBorder(25, 0, 15, 0));
         add(titulo, BorderLayout.NORTH);
 
+        // Recupera los casos resueltos y los ordena de forma predeterminada
         List<Caso> casosNoResueltos = casoService.obtenerCasosporEstado(Estado.RESUELTO);
 
         List<Caso> casos = casosNoResueltos.stream()
@@ -77,6 +89,11 @@ public class ListarCasos extends JFrame {
         add(panelInferiorVentana, BorderLayout.SOUTH);
     }
 
+    /**
+     * Genera un bloque visual tipo tarjeta para mostrar el resumen y los datos de un caso.
+     * * @param caso El objeto con toda la información del caso que se va a pintar.
+     * @return El panel maquetado con los datos del caso en formato Panel.
+     */
     public JPanel mostrarCasos(Caso caso) {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout(0, 12));
@@ -120,11 +137,5 @@ public class ListarCasos extends JFrame {
         panel.add(panelInferior, BorderLayout.SOUTH);
 
         return panel;
-    }
-
-    static void main() {
-        java.awt.EventQueue.invokeLater(() -> {
-            new ListarCasos().setVisible(true);
-        });
     }
 }

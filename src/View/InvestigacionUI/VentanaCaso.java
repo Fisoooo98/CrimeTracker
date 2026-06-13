@@ -10,6 +10,10 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
+/**
+ * Interfaz gráfica que representa el panel de control de un caso seleccionado.
+ * Ofrece al jugador una visión detallada del crimen y da acceso a las secciones de interrogatorios, visualización de pistas y notas.
+ */
 public class VentanaCaso extends JFrame {
     private Caso casoActual;
     private JuegoController juegoController = new JuegoController();
@@ -24,10 +28,12 @@ public class VentanaCaso extends JFrame {
 
     private static final Color BTN_BLUE = new Color(20, 20, 24);
     private static final Color BTN_GREEN = new Color(20, 20, 24);
-    private static final Color BTN_PURPLE = new Color(20, 20, 24);
     private static final Color BTN_YELLOW = new Color(20, 20, 24);
-    private static final Color BTN_RED = new Color(20, 20, 24);
 
+    /**
+     * Construye e inicializa la ventana del caso cargando los datos iniciales del caso y configurando la pantalla.
+     * @param caso El objeto con la información del caso que se va a examinar.
+     */
     public VentanaCaso(Caso caso) {
         this.casoActual = caso;
         setTitle("Ver Casos");
@@ -47,6 +53,11 @@ public class VentanaCaso extends JFrame {
         add(crearPanelInferior(), BorderLayout.SOUTH);
     }
 
+    /**
+     * Refresca la interfaz gráfica actualizando los datos del caso visualmente.
+     * Borra los componentes de la interfaz y los renueva con los datos actuales del caso
+     * @param casoActualizado El caso que contiene los datos modificados.
+     */
     public void actualizarPantalla(Caso casoActualizado) {
         this.casoActual = casoActualizado;
 
@@ -59,6 +70,11 @@ public class VentanaCaso extends JFrame {
         repaint();
     }
 
+    /**
+     * Genera el panel lateral izquierdo de la interfaz.
+     * Muetra los datos del caso(nombre, descripcion, numEvidencias, numPistas)
+     * @return El panel lateral de la interfaz
+     */
     public JPanel crearPanelIzquierdo(){
         JPanel lateral = new JPanel();
         lateral.setBackground(PANEL_BG);
@@ -154,7 +170,6 @@ public class VentanaCaso extends JFrame {
 
         lateralSur.add(Box.createVerticalStrut(6));
 
-        // Información de dificultad agregada aquí
         JLabel lblDificultad = new JLabel("Dificultad: " + casoActual.getDificultad());
         lblDificultad.setForeground(TEXT_WHITE);
         lblDificultad.setFont(new Font("SansSerif", Font.PLAIN, 13));
@@ -173,41 +188,42 @@ public class VentanaCaso extends JFrame {
         return lateral;
     }
 
+    /**
+     * Genera el panel inferior de la ventana.
+     * Incorpora el botón salir
+     * @return El panel inferior de la interfaz.
+     */
     public JPanel crearPanelInferior() {
         JPanel panelInferior = new JPanel(new BorderLayout());
         panelInferior.setBackground(PANEL_BG);
 
         panelInferior.setBorder(BorderFactory.createEmptyBorder(20, 25, 20, 25));
 
-        //Boton Salir
         JButton btnSalir = new JButton("← Salir");
-
         btnSalir.setBackground(new Color(20,20,24));
-
         btnSalir.setForeground(TEXT_WHITE);
-
         btnSalir.setFont(new Font("SansSerif", Font.BOLD, 14));
-
         btnSalir.setBorderPainted(false);
-
         btnSalir.setFocusPainted(false);
-
-
         btnSalir.setPreferredSize(new Dimension(120, 40));
 
-       btnSalir.addActionListener(e->dispose());
+        btnSalir.addActionListener(e->dispose());
 
         panelInferior.add(btnSalir, BorderLayout.WEST);
 
         return panelInferior;
-
     }
+
+    /**
+     * Genera el panel central principal de mandos.
+     * Añade un título y monta la cuadrícula que almacena los cards.
+     * @return El panel central de la ventana.
+     */
     public JPanel crearPanelCentral(){
         JPanel panelCentral = new JPanel();
         panelCentral.setLayout(new BorderLayout());
         panelCentral.setBackground(BG_DARK);
 
-        //Titulo
         JLabel Titulo = new JLabel("Investigar Casos",SwingConstants.CENTER);
         Titulo.setForeground(TEXT_GOLD);
         Titulo.setFont(new Font("SansSerif", Font.BOLD, 28));
@@ -215,12 +231,9 @@ public class VentanaCaso extends JFrame {
         Titulo.setBorder(BorderFactory.createEmptyBorder(30, 0, 20, 0));
         panelCentral.add(Titulo,BorderLayout.NORTH);
 
-        //Panel acciones
         JPanel panelAcciones = new JPanel();
         panelAcciones.setBackground(BG_DARK);
-
         panelAcciones.setBorder(new EmptyBorder(40, 30, 40, 30));
-
         panelAcciones.setLayout(new GridLayout(1, 5, 20, 0));
 
         panelAcciones.add(
@@ -241,7 +254,6 @@ public class VentanaCaso extends JFrame {
                 )
         );
 
-
         panelAcciones.add(
                 crearCard(
                         "NOTAS",
@@ -256,60 +268,45 @@ public class VentanaCaso extends JFrame {
         return panelCentral;
     }
 
-
+    /**
+     * Funcion para crear paneles (Cards) que se utilizan para que el usuario pueda navegar entre secciones.
+     * @param titulo El encabezado principal que se mostrará en la parte superior.
+     * @param descripcion El bloque de texto informativo de la tarjeta.
+     * @param colorBoton El color del boton.
+     * @param listener El Listener que contiene el boton.
+     * @return El panel tipo tarjeta listo para añadir.
+     */
     public JPanel crearCard(String titulo, String descripcion, Color colorBoton, ActionListener listener) {
 
         JPanel card = new JPanel();
-
         card.setBackground(CARD_BG);
-
         card.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(BORDER_COLOR, 1), new EmptyBorder(20, 20, 20, 20)));
-
         card.setLayout(new BorderLayout(0, 15));
 
-        //Titulo
-
         JLabel lblTitulo = new JLabel(titulo, SwingConstants.CENTER);
-
         lblTitulo.setForeground(TEXT_WHITE);
-
         lblTitulo.setFont(new Font("SansSerif", Font.BOLD, 16));
-
         card.add(lblTitulo, BorderLayout.NORTH);
 
-        //Descripcion
-
         JTextArea txtDescripcion = new JTextArea(descripcion);
-
         txtDescripcion.setEditable(false);
-
         txtDescripcion.setOpaque(false);
-
         txtDescripcion.setLineWrap(true);
-
         txtDescripcion.setWrapStyleWord(true);
-
         txtDescripcion.setForeground(TEXT_MUTED);
-
-        txtDescripcion.setFont(new Font("SansSerif",Font.PLAIN, 12));
-
+        txtDescripcion.setFont(new Font("SansSerif", Font.PLAIN, 12));
         card.add(txtDescripcion, BorderLayout.CENTER);
 
-        // Boton
         JButton btnAbrir = new JButton("Abrir");
-
         btnAbrir.setBackground(colorBoton);
-
         btnAbrir.setForeground(TEXT_WHITE);
-
         btnAbrir.setFocusPainted(false);
-
         btnAbrir.addActionListener(listener);
-
         card.add(btnAbrir, BorderLayout.SOUTH);
 
         return card;
     }
+
 
     public Caso getCasoActual() {
         return casoActual;

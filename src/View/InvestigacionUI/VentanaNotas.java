@@ -8,16 +8,25 @@ import Model.Service.JuegoService;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Pantalla del bloc de notas donde el usuario puede escribir y guardar sus pistas o hipótesis.
+ */
 public class VentanaNotas extends JFrame {
     private Caso casoActual;
     JuegoController juegoController = new JuegoController();
     JuegoService juegoService = new JuegoService();
+
+    // Colores de la interfaz
     private static final Color MAIN_BG_COLOR = new Color(18, 18, 20);
     private static final Color PANEL_BG_COLOR = new Color(26, 26, 30);
     private static final Color BORDER_COLOR = new Color(28, 28, 34);
     private static final Color TEXT_COLOR = new Color(170, 170, 175);
     private static final Color TITLE_COLOR = new Color(245, 240, 230);
 
+    /**
+     * Abre la ventana del bloc de notas con un tamaño fijo de 600x650.
+     * * @param caso El caso del que se van a consultar o guardar las anotaciones.
+     */
     public VentanaNotas(Caso caso) {
         this.casoActual = caso;
         this.setTitle("Notas de Pistas");
@@ -31,6 +40,9 @@ public class VentanaNotas extends JFrame {
         setLocationRelativeTo(null);
     }
 
+    /**
+     * Crea y organiza el título, la caja de texto con scroll y los botones de guardar y salir.
+     */
     private void initComponents() {
         //Titulo Principal
         JLabel Titulo = new JLabel("NOTAS GUARDADAS", SwingConstants.CENTER);
@@ -98,15 +110,12 @@ public class VentanaNotas extends JFrame {
         add(panelBotones, BorderLayout.SOUTH);
     }
 
+    /**
+     * Busca la nota guardada de este caso en la base de datos y la escribe dentro del cuadro de texto.
+     * * @param blocnotas El cuadro de texto donde se va a cargar la nota recuperada.
+     */
     public void cargarNota(JTextArea blocnotas){
         blocnotas.setText(juegoService.leerNota(casoActual.getId_caso()));
     }
 
-    static void main() {
-        CasoService casoService = new CasoService();
-        Caso caso = casoService.obtenerCasoPorId(1);
-        java.awt.EventQueue.invokeLater(() -> {
-            new VentanaNotas(caso).setVisible(true);
-        });
-    }
 }

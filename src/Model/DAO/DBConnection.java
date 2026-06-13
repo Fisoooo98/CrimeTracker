@@ -17,7 +17,7 @@ public class DBConnection {
         ) {
             stmt.execute("PRAGMA foreign_keys = ON;");
 
-            // 1. Tabla Casos
+            //1. Tabla Casos
             stmt.execute("""
                  CREATE TABLE IF NOT EXISTS Casos (
                          id_caso INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -33,7 +33,7 @@ public class DBConnection {
                  );
                 """);
 
-            // 2. Tabla Sospechosos
+            //2. Tabla Sospechosos
             stmt.execute("""
                 CREATE TABLE IF NOT EXISTS Sospechosos (
                     id_sospechoso INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -45,7 +45,7 @@ public class DBConnection {
                 );
                 """);
 
-            // 3. Tabla Respuestas (Creada antes que Pistas y Preguntas para evitar conflictos de Foreign Keys cruzadas)
+            // 3. Tabla Respuestas
             stmt.execute("""
                 CREATE TABLE IF NOT EXISTS Respuestas (
                     id_sospechoso INTEGER,
@@ -57,7 +57,7 @@ public class DBConnection {
                 );
                 """);
 
-            // 4. Tabla Pistas (Conectada a Casos y a Respuestas)
+            //4. Tabla Pistas
             stmt.execute("""
                 CREATE TABLE IF NOT EXISTS Pistas(
                     id_pista INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -71,7 +71,7 @@ public class DBConnection {
                 );
                 """);
 
-            // 5. Tabla Preguntas (Conectada a Pistas mediante id_pista_requisito)
+            //5. Tabla Preguntas
             stmt.execute("""
                 CREATE TABLE IF NOT EXISTS Preguntas (
                     id_pregunta INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -81,7 +81,7 @@ public class DBConnection {
                 );
                 """);
 
-            // 6. Tabla Evidencias
+            //6. Tabla Evidencias
             stmt.execute("""
                 CREATE TABLE IF NOT EXISTS Evidencias (
                     id_evidencia INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -92,7 +92,7 @@ public class DBConnection {
                 );
                 """);
 
-            // 7. Tabla inventarios
+            //7. Tabla inventarios
             stmt.execute("""
                 CREATE TABLE IF NOT EXISTS Inventario_Pistas (
                     id_caso INTEGER,
@@ -915,7 +915,7 @@ public class DBConnection {
             // Pregunta secreta que se desbloquea con la Pista 59 (cámara)
             stmt.execute("""
                 INSERT OR IGNORE INTO Preguntas (id_pregunta, texto_pregunta, id_pista_requisito) VALUES
-                (31, 'Una cámara le sitúa en la cocina 40 minutos antes del envenenamiento. ¿Cómo lo explica?', 59);
+                (31, 'Una cámara le sitúa en la cocina 40 minutos antes del envenenamiento. ¿Cómo lo explica?', 56);
                 """);
 
             stmt.execute("""
@@ -929,6 +929,289 @@ public class DBConnection {
                 (48, 'Grabación del Conde entrando en la cocina 40 minutos antes del envenenamiento.',          15),
                 (49, 'Contrato del catering de urgencia firmado desde el email personal del Conde.',            15),
                 (50, 'Documentos de la fundación con irregularidades que la presidenta iba a presentar esa noche.', 15);
+                """);
+
+            // ==========================================
+            // PREGUNTAS EXTRA (desbloqueadas por pista)
+            // id_pista_requisito != NULL
+            // Distribución: ~60% de sospechosos tienen 1 pregunta extra,
+            // ~20% de esos tienen 2 preguntas extra.
+            // ==========================================
+
+            // --- CASO 1: El escaparate roto ---
+            // p32 (req pista 2: disputa terrazas) → Pedro y Kike responden
+            // p33 (req pista 3: Kike conocía horarios) → Pedro y Ramona responden
+            stmt.execute("""
+                INSERT OR IGNORE INTO Preguntas (id_pregunta, texto_pregunta, id_pista_requisito) VALUES
+                (32, 'La disputa por la terraza con Ramona era conocida en el barrio... ¿sabes si llegó a mayores?', 2),
+                (33, 'Se sabe que alguien conocía los horarios de recaudación exactos. ¿Quién podría saberlo además de ti?', 3);
+                """);
+
+            stmt.execute("""
+                INSERT OR IGNORE INTO Respuestas (id_sospechoso, id_pregunta, texto_respuesta) VALUES
+                (1, 32, 'Ramona y la dueña se llevaban fatal, pero yo no me meto en esos líos de vecindad.'),
+                (3, 32, 'Todo el barrio sabía de esa guerra. Ramona amenazó con denunciarla varias veces.'),
+                (1, 33, 'Los horarios los conocía cualquier empleado que hubiera trabajado allí tiempo suficiente.'),
+                (2, 33, 'Yo nunca presté atención a esos detalles. Solo venía a tomar algo después del trabajo.');
+                """);
+
+            // --- CASO 2: El atraco al quiosco ---
+            // p34 (req pista 5: albarán falsificado) → Dolores y Gustavo responden
+            // p35 (req pista 6: deudas de Gustavo) → Dolores y Fran responden
+            stmt.execute("""
+                INSERT OR IGNORE INTO Preguntas (id_pregunta, texto_pregunta, id_pista_requisito) VALUES
+                (34, 'El albarán de entrega tiene la fecha alterada. ¿Para qué querría alguien falsificar eso?', 5),
+                (35, 'Alguien tenía deudas que vencían ese mismo día. ¿Notaste a alguien nervioso o desesperado?', 6);
+                """);
+
+            stmt.execute("""
+                INSERT OR IGNORE INTO Respuestas (id_sospechoso, id_pregunta, texto_respuesta) VALUES
+                (4, 34, 'Para tener una coartada, supongo. Si cambias la fecha puedes estar en dos sitios a la vez sobre el papel.'),
+                (6, 34, 'No sé nada de ningún albarán. Yo no reparto paquetes.'),
+                (4, 35, 'Gustavo siempre parecía agobiado con el dinero. Lo comentaba en el bar a veces.'),
+                (5, 35, 'Yo no me fijo en los problemas económicos de los demás. Tengo bastante con los míos.');
+                """);
+
+            // --- CASO 3: El incendio del almacén ---
+            // p36 (req pista 8: solo Marcos e Isidro tenían llave) → Verónica e Isidro responden
+            // p37 (req pista 9: Isidro iba a ser despedido) → Verónica y Marcos responden
+            // [Isidro tiene 2 extras: p36 y p37]
+            stmt.execute("""
+                INSERT OR IGNORE INTO Preguntas (id_pregunta, texto_pregunta, id_pista_requisito) VALUES
+                (36, 'Solo dos personas tenían llave del almacén. ¿Alguna vez prestaste o copiaste la tuya?', 8),
+                (37, 'Parece que alguien sabía que iba a ser despedido. ¿Notaste algo raro en el comportamiento de Isidro últimamente?', 9);
+                """);
+
+            stmt.execute("""
+                INSERT OR IGNORE INTO Respuestas (id_sospechoso, id_pregunta, texto_respuesta) VALUES
+                (7, 36, 'Yo nunca tuve llave, ya lo he dicho. Marcos era muy reservado con eso.'),
+                (9, 36, 'Mi llave siempre estuvo conmigo. No se la presté a nadie. ¿Por qué iba a hacerlo?'),
+                (9, 37, '¡No sabía nada de ningún despido! Nadie me dijo nada. Es una trampa para inculparme.'),
+                (8, 37, 'Los últimos días estaba más callado que de costumbre. Pensé que eran problemas personales.');
+                """);
+
+            // --- CASO 4: El bolso desaparecido ---
+            // p38 (req pista 10: foto bolso abierto 18:42) → Lourdes y Sergio responden
+            // p39 (req pista 11: Sergio preguntó al barman) → Lourdes y Toni responden
+            stmt.execute("""
+                INSERT OR IGNORE INTO Preguntas (id_pregunta, texto_pregunta, id_pista_requisito) VALUES
+                (38, 'Una foto sitúa el bolso abierto a las 18:42. ¿Dónde estabas exactamente en ese momento?', 10),
+                (39, 'Alguien preguntó al barman dónde dejaba la gente los objetos de valor. ¿Lo viste hablar con el barman?', 11);
+                """);
+
+            stmt.execute("""
+                INSERT OR IGNORE INTO Respuestas (id_sospechoso, id_pregunta, texto_respuesta) VALUES
+                (10, 38, 'A esa hora estaba sirviendo los entrantes en el salón principal. Hay doce personas que lo pueden confirmar.'),
+                (12, 38, 'En la barra, tomando algo. No estaba cerca del guardarropa para nada.'),
+                (10, 39, 'Vi a ese hombre hablar con el barman un buen rato, sí. Me pareció raro porque casi no conocía a nadie.'),
+                (11, 39, 'No me fijé en conversaciones ajenas. Yo estaba pendiente de los encuadres y la luz.');
+                """);
+
+            // --- CASO 5: El coche rayado ---
+            // p40 (req pista 13: discusión fuerte) → Amparo y Bruno responden
+            // p41 (req pista 14: Bruno desconectó cámaras) → Amparo y Javier responden
+            stmt.execute("""
+                INSERT OR IGNORE INTO Preguntas (id_pregunta, texto_pregunta, id_pista_requisito) VALUES
+                (40, 'Consta que hubo una discusión muy fuerte en dirección esa tarde. ¿La escuchaste?', 13),
+                (41, 'Las cámaras estuvieron desconectadas justo en la franja clave. ¿Sabías que iban a estar apagadas?', 14);
+                """);
+
+            stmt.execute("""
+                INSERT OR IGNORE INTO Respuestas (id_sospechoso, id_pregunta, texto_respuesta) VALUES
+                (13, 40, 'Desde la sala de reuniones se oían voces muy altas. El padre de ese alumno salió muy enfadado.'),
+                (14, 40, 'Yo estaba en el sótano haciendo mantenimiento. No oigo nada desde allí.'),
+                (13, 41, 'No tengo ningún motivo para saber cuándo se hacen los mantenimientos del aparcamiento.'),
+                (15, 41, 'No, qué voy a saber yo eso. Fui a la reunión y me fui. No soy técnico de cámaras.');
+                """);
+
+            // --- CASO 6: La firma falsificada ---
+            // p42 (req pista 15: Valentín gestionó solo) → Rebeca, Valentín y Pilar responden
+            // p43 (req pista 16: transferencia 4000€) → Nicolás y Pilar responden
+            // [Pilar tiene 2 extras: p42 y p43]
+            stmt.execute("""
+                INSERT OR IGNORE INTO Preguntas (id_pregunta, texto_pregunta, id_pista_requisito) VALUES
+                (42, 'Si Valentín fue el único contacto con ese cliente, ¿cómo es que nadie supervisó el proceso?', 15),
+                (43, 'Valentín recibió una transferencia de 4.000 euros de una cuenta desconocida. ¿Tienes alguna explicación?', 16);
+                """);
+
+            stmt.execute("""
+                INSERT OR IGNORE INTO Respuestas (id_sospechoso, id_pregunta, texto_respuesta) VALUES
+                (16, 42, 'El proceso de supervisión existe, pero con la presión por cerrar antes de fin de trimestre se saltaron pasos.'),
+                (18, 42, 'Yo seguí el protocolo habitual. Si nadie me supervisó, eso es un problema del sistema, no mío.'),
+                (19, 42, 'A mí me llegó el papeleo ya cerrado. No soy quien decide quién supervisa a quién.'),
+                (17, 43, 'Eso es una información grave. Si es cierta, Valentín tiene que dar explicaciones inmediatamente.'),
+                (19, 43, 'Yo gestiono las nóminas y pagos oficiales. Esa transferencia no pasa por mis manos. Es externa.');
+                """);
+
+            // --- CASO 7: El veneno en el invernadero ---
+            // p44 (req pista 20: falta frasco acónito) → Celeste, Paz y Emilio responden
+            // p45 (req pista 21: plagio de Paz) → Celeste y Honorato responden
+            // [Celeste tiene 2 extras: p44 y p45]
+            stmt.execute("""
+                INSERT OR IGNORE INTO Preguntas (id_pregunta, texto_pregunta, id_pista_requisito) VALUES
+                (44, 'Falta un frasco de acónito del invernadero. ¿Sabes quién tenía acceso a ese armario además de Honorato?', 20),
+                (45, 'Se ha descubierto que Dña. Paz plagió la investigación principal de su tío. ¿Tenía él pensado actuar legalmente?', 21);
+                """);
+
+            stmt.execute("""
+                INSERT OR IGNORE INTO Respuestas (id_sospechoso, id_pregunta, texto_respuesta) VALUES
+                (20, 44, 'Mi tío era muy celoso de su invernadero. Solo Honorato y personas de confianza entraban allí.'),
+                (22, 44, 'Yo no he pisado ese invernadero. No sé nada de ningún armario ni de ningún frasco.'),
+                (23, 44, 'El armario de sustancias lo conocíamos los dos. Pero está cerrado con llave y solo don Aurelio la tenía.'),
+                (20, 45, 'Sí, me dijo que iba a presentar una denuncia formal la semana siguiente. Estaba muy indignado.'),
+                (21, 45, 'No sé nada de pleitos académicos. Yo trabajo con las plantas, no con los papeles del laboratorio.');
+                """);
+
+            // --- CASO 8: El sabotaje en la carrera ---
+            // p46 (req pista 23: técnico no autorizado) → Óscar, Nacho y Cris responden
+            // p47 (req pista 26: Nacho perdió patrocinio) → Óscar y Cris responden
+            // [Óscar tiene 2 extras: p46 y p47]
+            stmt.execute("""
+                INSERT OR IGNORE INTO Preguntas (id_pregunta, texto_pregunta, id_pista_requisito) VALUES
+                (46, 'Un técnico ajeno estuvo en el box sin autorización. ¿Puedes describirlo o sabes quién pudo haberle dejado pasar?', 23),
+                (47, 'Nacho perdió su patrocinio por culpa de la víctima. ¿Notaste tensión entre ellos durante el evento?', 26);
+                """);
+
+            stmt.execute("""
+                INSERT OR IGNORE INTO Respuestas (id_sospechoso, id_pregunta, texto_respuesta) VALUES
+                (24, 46, 'Era un hombre de unos cuarenta, con el chaleco del equipo Serrano. Entró como si tuviera permiso.'),
+                (25, 46, 'Yo no estuve en el área de boxes antes de la carrera. No puedo decirte nada de eso.'),
+                (27, 46, 'No vi a ningún desconocido. Llegué cuando ya casi era la hora de salida.'),
+                (24, 47, 'Nacho lo saludó con frialdad antes de la concentración. Era evidente que había mal ambiente.'),
+                (27, 47, 'Pedro me habló de eso. Le molestaba mucho perder ese patrocinio. Decía que no era justo.');
+                """);
+
+            // --- CASO 9: El manuscrito robado ---
+            // p48 (req pista 28: copia de llave sin registrar) → Herminia, Patricio y Mateo responden
+            // p49 (req pista 29: mochila y detector de metales) → Herminia y Sra. Fuentes responden
+            // [Herminia tiene 2 extras: p48 y p49]
+            stmt.execute("""
+                INSERT OR IGNORE INTO Preguntas (id_pregunta, texto_pregunta, id_pista_requisito) VALUES
+                (48, 'Existe una copia de llave de emergencia sin registrar. ¿Quién más podría saber de su existencia?', 28),
+                (49, 'La mochila de Mateo activó el detector al salir. ¿Viste salir a Mateo o notaste algo en su comportamiento?', 29);
+                """);
+
+            stmt.execute("""
+                INSERT OR IGNORE INTO Respuestas (id_sospechoso, id_pregunta, texto_respuesta) VALUES
+                (28, 48, 'Lo sabíamos cuatro personas como mucho. Pero Mateo estuvo mucho tiempo en el archivo haciendo su investigación...'),
+                (29, 48, 'Yo no sabía que había una copia extra. Con una sola ya me parecía suficiente riesgo.'),
+                (31, 48, 'No sé de qué copia hablan. Yo no tengo ninguna llave.'),
+                (28, 49, 'Mateo salió con la mochila muy cargada para ser un voluntario que solo cuelga carteles. Me llamó la atención.'),
+                (30, 49, 'No estaba en el edificio cuando Mateo salió. Estaba en la rueda de prensa. No puedo decirle nada.');
+                """);
+
+            // --- CASO 10: El accidente de montaña ---
+            // p50 (req pista 31: cuerda cortada con filo) → Félix, Blanca y Roque responden
+            // p51 (req pista 34: mosquetón doblado) → Blanca y Roque responden
+            // [Blanca tiene 2 extras: p50 y p51]
+            stmt.execute("""
+                INSERT OR IGNORE INTO Preguntas (id_pregunta, texto_pregunta, id_pista_requisito) VALUES
+                (50, 'La cuerda tiene un corte limpio de filo, no es desgaste. ¿Alguien llevaba un cuchillo o navaja en la excursión?', 31),
+                (51, 'El mosquetón estaba doblado antes de la caída. ¿Alguien revisó el equipo individual de la víctima esa mañana?', 34);
+                """);
+
+            stmt.execute("""
+                INSERT OR IGNORE INTO Respuestas (id_sospechoso, id_pregunta, texto_respuesta) VALUES
+                (32, 50, 'Yo siempre llevo una navaja multiusos. Es equipo estándar. Blanca también llevaba una, la vi al preparar las mochilas.'),
+                (33, 50, 'Una navaja de montaña es equipo básico. Todo el mundo lleva una. No prueba nada.'),
+                (34, 50, 'Vi que Blanca guardaba algo en el bolsillo lateral justo antes de empezar la ruta, pero no vi qué era.'),
+                (33, 51, 'Yo no toqué el equipo de nadie. Cada uno es responsable de revisar el suyo.'),
+                (34, 51, 'La revisión del equipo la hizo Félix por la mañana. Yo no me metí en eso.');
+                """);
+
+            // --- CASO 11: El fraude en la subasta ---
+            // p52 (req pista 35: pigmentos modernos) → Inés, Lorenzo y Beatriz responden
+            // p53 (req pista 37: deuda hipotecaria Camilo) → Inés y Beatriz responden
+            // [Beatriz tiene 2 extras: p52 y p53]
+            stmt.execute("""
+                INSERT OR IGNORE INTO Preguntas (id_pregunta, texto_pregunta, id_pista_requisito) VALUES
+                (52, 'El análisis confirma que el cuadro es una falsificación reciente. ¿Cuándo fue la última vez que viste el original?', 35),
+                (53, 'Camilo tiene una deuda hipotecaria enorme que vence en días. ¿Sabías que estaba en esa situación económica?', 37);
+                """);
+
+            stmt.execute("""
+                INSERT OR IGNORE INTO Respuestas (id_sospechoso, id_pregunta, texto_respuesta) VALUES
+                (35, 52, 'Lo vi hace tres días al certificarlo. Era completamente auténtico en ese momento, lo juro.'),
+                (36, 52, 'Lo vi el día de la recogida, sellado. No lo abrí. Si era una copia ya estaba así cuando me lo entregaron.'),
+                (38, 52, 'Tuve el cuadro en mis manos para documentarlo hace dos semanas. En ese momento no había duda de su autenticidad.'),
+                (35, 53, 'No tenía ni idea. Camilo siempre parecía solvente. Esto lo cambia todo.'),
+                (38, 53, 'Algo había oído sobre problemas financieros, pero nada concreto. Por eso me extrañó esa cláusula de indemnización.');
+                """);
+
+            // --- CASO 12: El espía en el laboratorio ---
+            // p54 (req pista 40: accesos fuera de fichaje) → Yolanda, Ignacio y Nadia responden
+            // p55 (req pista 43: Nadia buscó cifrado) → Yolanda y Sr. Cano responden
+            // [Yolanda tiene 2 extras: p54 y p55]
+            stmt.execute("""
+                INSERT OR IGNORE INTO Preguntas (id_pregunta, texto_pregunta, id_pista_requisito) VALUES
+                (54, 'Hubo accesos a tu carpeta en horarios en que no estabas fichada. ¿Alguien conocía tus credenciales?', 40),
+                (55, 'Una becaria buscó cómo cifrar archivos el día anterior. ¿Notaste comportamientos extraños en el equipo?', 43);
+                """);
+
+            stmt.execute("""
+                INSERT OR IGNORE INTO Respuestas (id_sospechoso, id_pregunta, texto_respuesta) VALUES
+                (39, 54, 'Mis credenciales son solo mías. Pero Ignacio tiene acceso de administrador a todas las cuentas del sistema.'),
+                (40, 54, 'Yo no usé las credenciales de nadie. Si hay accesos raros es porque el sistema tiene un fallo que yo no provoqué.'),
+                (41, 54, 'Yo no tengo acceso a la carpeta de Yolanda. Mi nivel no llega a eso.'),
+                (39, 55, 'Nadia me preguntó cosas sobre seguridad de archivos esa semana. Le expliqué lo básico sin sospechar nada.'),
+                (42, 55, 'Si una becaria está investigando cifrado sin autorización, eso debería haberse reportado al departamento de TI inmediatamente.');
+                """);
+
+            // --- CASO 13: El heredero envenenado ---
+            // p56 (req pista 45: residuo oleoso en copa) → Greta, Damián y Lucía responden
+            // p57 (req pista 46: nota impresa desde despacho Greta) → Greta y Rodrigo responden
+            // [Greta tiene 2 extras: p56 y p57]
+            stmt.execute("""
+                INSERT OR IGNORE INTO Preguntas (id_pregunta, texto_pregunta, id_pista_requisito) VALUES
+                (56, 'La copa del heredero tenía un residuo oleoso específico. ¿Sabes quién pudo tener acceso a ese tipo de sustancia?', 45),
+                (57, 'La nota de instrucciones se imprimió desde tu despacho. ¿Quién más tiene acceso a él además de ti?', 46);
+                """);
+
+            stmt.execute("""
+                INSERT OR IGNORE INTO Respuestas (id_sospechoso, id_pregunta, texto_respuesta) VALUES
+                (43, 56, 'Ese tipo de compuesto no es de uso doméstico. Solo alguien con acceso a un botiquín profesional podría tenerlo.'),
+                (44, 56, 'Yo trabajo con vinos y destilados. No conozco ningún residuo oleoso que deba estar en una copa de champán.'),
+                (46, 56, 'No tengo ni idea de química. Pero si hay algo en esa copa, alguien lo puso a propósito.'),
+                (43, 57, 'Mi despacho está cerrado con llave cuando no estoy. Rodrigo tiene una copia porque gestiona documentos confidenciales.'),
+                (45, 57, 'Efectivamente tengo acceso al despacho de Greta por razones profesionales. Pero eso no me convierte en culpable.');
+                """);
+
+            // --- CASO 14: El tren de medianoche ---
+            // p58 (req pista 50: figura con gabardina) → Irene, Watanabe y Héctor responden
+            // p59 (req pista 52: billete comprado antes) → Irene y Watanabe responden
+            // [Irene tiene 2 extras: p58 y p59]
+            stmt.execute("""
+                INSERT OR IGNORE INTO Preguntas (id_pregunta, texto_pregunta, id_pista_requisito) VALUES
+                (58, 'El revisor vio a alguien con gabardina oscura en el pasillo a las 23:15. ¿Viste a alguien así en el tren?', 50),
+                (59, 'Diana compró su billete antes que la víctima. Eso implica que sabía que viajaría. ¿Alguien podía haberle filtrado esa información?', 52);
+                """);
+
+            stmt.execute("""
+                INSERT OR IGNORE INTO Respuestas (id_sospechoso, id_pregunta, texto_respuesta) VALUES
+                (47, 58, 'Vi a una mujer con gabardina cruzar el vagón restaurante sobre las once y cuarto. Iba hacia los compartimentos.'),
+                (48, 58, 'Yo estaba en mi compartimento. No vi nada en el pasillo.'),
+                (50, 58, 'La persona que vi llevaba gabardina oscura, sí. La estatura y complexión encajaban con una mujer adulta.'),
+                (47, 59, 'El jefe usaba siempre la misma agencia de viajes. Cualquiera que le conociera bien podría haberlo sabido.'),
+                (48, 59, 'Yo no compartí el itinerario de nadie con terceros. Mis viajes son privados.');
+                """);
+
+            // --- CASO 15: La red de las máscaras ---
+            // p60 (req pista 55: catering externo contratado ese día) → Álvaro, Valentina y Conde responden
+            // p61 (req pista 56: invitación falsificada de Álvaro) → Valentina y Dra. Míriam responden
+            // [Valentina tiene 2 extras: p60 y p61]
+            stmt.execute("""
+                INSERT OR IGNORE INTO Preguntas (id_pregunta, texto_pregunta, id_pista_requisito) VALUES
+                (60, 'El catering oficial fue sustituido ese mismo día por uno sin historial. ¿Quién tenía autoridad para hacer ese cambio?', 55),
+                (61, 'La invitación de Álvaro es una falsificación. ¿Cómo es posible que pasara los controles de acceso?', 56);
+                """);
+
+            stmt.execute("""
+                INSERT OR IGNORE INTO Respuestas (id_sospechoso, id_pregunta, texto_respuesta) VALUES
+                (51, 60, 'Yo llegué con mi invitación y entré. No sé nada de ningún catering ni de quién lo contrató.'),
+                (52, 60, 'Solo el anfitrión o yo podíamos autorizar un cambio de proveedor de última hora. Yo no lo hice.'),
+                (53, 60, 'El cambio fue una decisión operativa de último momento por una incidencia con el proveedor original. No tiene más misterio.'),
+                (52, 61, 'Los controles de acceso los llevaba una empresa externa. Si una falsificación pasó, fue su error, no el mío.'),
+                (54, 61, 'Vi a Álvaro en la entrada sin problemas. No tuve ninguna razón para sospechar que su invitación era falsa.');
                 """);
 
             System.out.println("Base de datos iniciada con los 15 casos.");

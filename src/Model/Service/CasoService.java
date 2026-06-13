@@ -20,6 +20,10 @@ public class CasoService {
         casoDAO.marcarAciertoCaso(id_caso,valor);
     }
 
+    /**
+     * Desactiva todos los casos que hay y activa el caso que le pasas por parametro
+     * @param id_caso caso que quieres poner en activo
+     */
     public void seleccionarCasoActual(int id_caso) {
         //Ponemos todos los casos en false.
          casoDAO.desactivarTodosLosCasos();
@@ -28,7 +32,11 @@ public class CasoService {
         casoDAO.actualizarCasoActual(id_caso,true);
     }
 
-    //Calcular estadisticas del perfil
+
+    /**
+     * Calcula a traves de los datos de la BD las estadisticas del usuario.
+     * @return devuelve todos los datos que se necesita mostrar en la interfaz sobre el usuario
+     */
     public ResultadoPerfil obtenerPerfil() {
         //Variables
         List<Caso> casosFaciles = casoDAO.obtenerCasosPorDificultad(Dificultad.FACIL);
@@ -76,26 +84,48 @@ public class CasoService {
        return new ResultadoPerfil(contadorResueltosDificiles,contadorResueltosFaciles,contadorResueltosNormales,puntuacion,
                tierperfil,contadorTotalDificiles,contadorTotalNormales,contadorTotalFaciles);
     }
+
+    /**
+     * Recupera el caso que se encuentra actualmente activo en el sistema
+     * @return caso activo del sistema
+     */
     public Caso obtenerCasoActivo(){
         return casoDAO.obtenerCasoActivo();
     }
 
 
+    /**
+     * Actualiza el nivel de dificultad de un caso específico en la base de datos.
+     * @param id_caso El identificador único del caso.
+     * @param dificultad La nueva dificultad que se le va a asignar al caso.
+     */
     public void actualizarDificultad(int id_caso, Dificultad dificultad) {
-        casoDAO.actualizarDificultad(id_caso,dificultad);
+        casoDAO.actualizarDificultad(id_caso, dificultad);
     }
 
-
-
+    /**
+     * Obtiene una lista de casos filtrados según si fueron resueltos correctamente o no.
+     * @param correcto True si se quieren obtener los casos acertados, false para los fallados.
+     * @return Una lista con los casos que coinciden con el resultado de la resolución.
+     */
     public List<Caso> obtenerCasosporCorrecto(boolean correcto) {
         return casoDAO.obtenerCasosporCorrecto(correcto);
     }
 
+    /**
+     * Obtiene una lista de todos los casos que se encuentran en un estado específico.
+     * @param estado El estado del caso a buscar (Resuelto, Pendiente o No Resuelto).
+     * @return Una lista con los casos que se encuentran en dicho estado.
+     */
     public List<Caso> obtenerCasosporEstado(Estado estado) {
         return casoDAO.obtenerCasosporEstado(estado);
     }
 
-
+    /**
+     * Recupera los datos completos de un caso específico utilizando su identificador único.
+     * @param id_caso El identificador único del caso que se quiere buscar.
+     * @return El caso correspondiente al identificador proporcionado.
+     */
     public Caso obtenerCasoPorId(int id_caso) {
         return casoDAO.obtenerCasoPorId(id_caso);
     }

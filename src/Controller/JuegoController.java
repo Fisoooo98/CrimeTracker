@@ -16,15 +16,25 @@ import javax.swing.*;
 import java.util.List;
 
 public class JuegoController {
+
     private JFrame ventanaActual;
     private Caso casoActual;
     private final CasoService casoService = new CasoService();
     private final JuegoService juegoService = new JuegoService();
     private final SospechosoDAO sospechosoDAO = new SospechosoDAO();
-    private final InventarioDAO inventarioDAO = new InventarioDAO();
+
+    /**
+     * Inicializa el controlador de InvestigacionUI
+     */
     public  JuegoController() {
         this.casoActual = casoService.obtenerCasoActivo();
     }
+
+    /**
+     * Sirve para abrir la ventana pistas con las evidencias y pistas obtenidas en el caso
+     * Cierra la ventana activa actual si existe para liberar recursos.
+     * @param ventanaCaso ventana para obtener las pistas del caso que hay activo
+     */
     public void AbrirPistas(VentanaCaso ventanaCaso){
         if (ventanaActual != null) {
             ventanaActual.dispose();
@@ -35,6 +45,11 @@ public class JuegoController {
         ventanaActual.setVisible(true);
     }
 
+    /**
+     * Funciona para abrir la ventana de interrogatorio
+     * Cierra la ventana activa actual si existe para liberar recursos.
+     * @param ventanaCaso ventana para obtener las preguntas y sospechosos del caso que hay activo
+     */
     public void AbrirInterrogatorio(VentanaCaso ventanaCaso){
         if (ventanaActual != null) {
             ventanaActual.dispose();
@@ -45,6 +60,10 @@ public class JuegoController {
         ventanaActual.setVisible(true);
     }
 
+    /**
+     * Funciona para abrir la ventana notas
+     * Cierra la ventana activa actual si existe para liberar recursos.
+     */
     public void AbrirNotas(){
         if (ventanaActual != null) {
             ventanaActual.dispose();
@@ -55,10 +74,24 @@ public class JuegoController {
         ventanaActual.setVisible(true);
     }
 
+    /**
+     * Es el controlador del boton guardar en la ventana VerNotas
+     * Sirve para guardar las anotaciones que ha escrito el usuario en cada caso
+     * @param texto el texto que hay dentro de la nota
+     * @param casoActual el caso donde se guardan las notas
+     */
     public void guardarNota(String texto,Caso casoActual){
         juegoService.tomarNota(texto,casoActual.getId_caso());
     }
 
+    /**
+     * Funcion donde le das una pregunta a un sospechoso y obtienes una respuesta
+     * Este gestiona las ventanas emergentes que salen cuando no obtienes una evidencia o pista
+     * También te limita cuando ya no tienes más preguntas disponibles o el caso eta cerrado dejandote sin poder preguntar.
+     * @param pregunta el texto de la pregunta que le has hecho al sospechoso
+     * @param id_sospechoso el sospechoso al cual estás interrogando
+     * @param ventanaInterrogar sirve para mostrar ventanas emergentes y para poder actualizar el diálogo de la interfaz.
+     */
     public void interrogar(String pregunta,int id_sospechoso,VentanaInterrogar ventanaInterrogar){
         Caso caso = casoService.obtenerCasoActivo();
         if (caso.getEstado() != Estado.RESUELTO){
@@ -88,6 +121,11 @@ public class JuegoController {
         }
     }
 
+    /**
+     *  Funcion que sirve para acusar a un sospechos y te muestra si es culpable o no
+     * @param id_sospechoso sopechoso acusado
+     * @param ventanaInterrogar sirve para mostrar a la interfaz si era el impostor o no
+     */
     public void acusar(int id_sospechoso,VentanaInterrogar ventanaInterrogar){
         Caso caso = casoService.obtenerCasoActivo();
         if (caso.getEstado() != Estado.RESUELTO){

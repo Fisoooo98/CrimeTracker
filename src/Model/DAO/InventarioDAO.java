@@ -60,6 +60,7 @@ public class InventarioDAO {
         return pistas;
     }
 
+
     public Pista obtenerPistaPorId(int id_pista){
         String sql = "select * from Pistas where id_pista = ?";
         try (

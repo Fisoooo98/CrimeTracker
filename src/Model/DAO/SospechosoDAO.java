@@ -64,10 +64,8 @@ public class SospechosoDAO {
             ps.setInt(1, id_caso);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                        System.out.println("Iniciando return");
                         int esCulpableInt = rs.getInt("es_culpable");
                         boolean esCulpable = esCulpableInt == 1;
-                        System.out.println(esCulpable);
                         return new Sospechoso(
                                 rs.getInt("id_sospechoso"),
                                 rs.getString("nombre"),

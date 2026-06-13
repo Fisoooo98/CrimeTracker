@@ -8,51 +8,51 @@ import View.InvestigacionUI.VentanaCaso;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Ventana del menú principal del juego.
+ * Sirve como eje central para navegar a las distintas pantallas de la aplicación.
+ */
 public class MenuPrincipal extends JFrame {
     CasoService casoService = new CasoService();
-    private static final Color MAIN_BG_COLOR = new Color(24, 24, 24); // Fondo principal oscuro
-    private static final Color PANEL_BG_COLOR = new Color(36, 36, 36); // Fondo de los paneles interiores
-    private static final Color BORDER_COLOR = new Color(50, 50, 50); // Color de borde suave
-    private static final Color TEXT_COLOR = new Color(240, 240, 240); // Color de texto claro
-    private static final Color TITLE_COLOR = new Color(200, 210, 220); // Color del título ligeramente azulado
+
+    // Colores de la interfaz
+    private static final Color MAIN_BG_COLOR = new Color(24, 24, 24);
+    private static final Color PANEL_BG_COLOR = new Color(36, 36, 36);
+    private static final Color BORDER_COLOR = new Color(50, 50, 50);
+    private static final Color TEXT_COLOR = new Color(240, 240, 240);
+    private static final Color TITLE_COLOR = new Color(200, 210, 220);
     MenuController menuController = new MenuController();
+
+    /**
+     * Abre y configura la ventana del menú principal con un tamaño de 500x500.
+     */
     public MenuPrincipal() {
         setTitle("MenuPrincipal");
-
         setSize(500, 500);
-
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         initComponents();
 
         getContentPane().setBackground(new Color(20, 20, 20));
-
         setVisible(true);
-
         setLayout(new BorderLayout());
     }
 
+    /**
+     * Crea los componentes gráficos del menú: el título del juego y la botonera de navegación.
+     */
     private void initComponents() {
-
-
-
         //Titulo
         JLabel titulo = new JLabel("CRIME TRACKER", SwingConstants.CENTER);
-
         titulo.setForeground(new Color(230, 230, 230));
         titulo.setFont(new Font("Serif", Font.BOLD, 34));
-
         titulo.setBorder(BorderFactory.createEmptyBorder(30, 0, 20, 0));
-
         add(titulo, BorderLayout.NORTH);
-
 
         //Panel para los botones
         JPanel panel = new JPanel();
         panel.setBackground(new Color(20, 20, 20));
-
         panel.setLayout(new GridLayout(0, 1, 10, 10));
-
         panel.setBorder(BorderFactory.createEmptyBorder(20, 80, 40, 80));
 
         String[] textos = {
@@ -70,11 +70,13 @@ public class MenuPrincipal extends JFrame {
         add(panel, BorderLayout.CENTER);
     }
 
-    //Plantilla de boton.
+    /**
+     * Crea un botón personalizado con efectos visuales de selección y gestor de eventos de clic.
+     * * @param textoHtml El texto del botón, formateado en HTML para centrarlo.
+     * @return El botón configurado en formato {@link JButton}.
+     */
     private JButton crearBoton(String textoHtml) {
-
         JButton btn = new JButton(textoHtml);
-
         btn.setBackground(new Color(25, 25, 25));
         btn.setForeground(Color.WHITE);
 
@@ -84,51 +86,48 @@ public class MenuPrincipal extends JFrame {
         btn.setOpaque(true);
 
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
         btn.setPreferredSize(new Dimension(220, 60));
 
-        //hover
+        // Evento para cambiar el color de fondo cuando el ratón pasa por encima
         btn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent e) {
-                btn.setBackground(new Color(45, 45, 45)); //más claro
+                btn.setBackground(new Color(45, 45, 45));
             }
 
             @Override
             public void mouseExited(java.awt.event.MouseEvent e) {
-                btn.setBackground(new Color(25, 25, 25)); //color original
+                btn.setBackground(new Color(25, 25, 25));
             }
         });
 
-        //Click Listeners
+        // Evento de clic para redirigir según la opción seleccionada
         btn.addActionListener(e -> {
-
             String texto = btn.getText();
 
             if (texto.contains("Ver Casos")) {
                 menuController.accederAVentanaCasos();
             }
-
             else if (texto.contains("Iniciar Investigación")) {
                 menuController.accederAlCaso(this);
             }
-
             else if (texto.contains("Ver Perfil")) {
                 menuController.accederAlPerfil();
             }
-
             else if (texto.contains("Listar Casos Resueltos")) {
                 menuController.accederAListarCasos();
             }
-
             else if (texto.contains("Salir")) {
                 System.exit(0);
             }
-
         });
         return btn;
     }
 
+    /**
+     * Abre un cuadro de diálogo flotante y personalizado para mostrar notificaciones del menú.
+     * * @param texto El mensaje que se va a mostrar al usuario.
+     */
     public void mostrarDialogo(String texto) {
         JDialog dialogo = new JDialog(this, "Notificación", true);
         dialogo.setUndecorated(true);
@@ -165,11 +164,5 @@ public class MenuPrincipal extends JFrame {
         panelFondo.add(panelBoton, BorderLayout.SOUTH);
         dialogo.add(panelFondo);
         dialogo.setVisible(true);
-    }
-
-    static void main(String[] args) {
-        java.awt.EventQueue.invokeLater(() -> {
-            new MenuPrincipal();
-        });
     }
 }

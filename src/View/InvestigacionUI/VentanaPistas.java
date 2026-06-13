@@ -8,28 +8,31 @@ import Model.Service.CasoService;
 import javax.swing.*;
 import java.awt.*;
 
-
-
+/**
+ * Pantalla del juego que sirve para listar y leer todas las pistas y evidencias descubiertas.
+ */
 public class VentanaPistas extends JFrame {
     private Caso casoactual;
     private CasoService casoService;
+
+    // Colores de la interfaz
     private static final Color MAIN_BG_COLOR = new Color(18, 18, 20);
     private static final Color PANEL_BG_COLOR = new Color(26, 26, 30);
     private static final Color BORDER_COLOR = new Color(28, 28, 34);
     private static final Color TEXT_COLOR = new Color(170, 170, 175);
     private static final Color TITLE_COLOR = new Color(245, 240, 230);
 
+    /**
+     * Abre la ventana de pistas y evidencias con un tamaño fijo de 600x750.
+     * * @param ventanaCaso La ventana anterior de la que se recupera el caso que está activo.
+     */
     public VentanaPistas(VentanaCaso ventanaCaso) {
         this.casoactual = ventanaCaso.getCasoActual();
 
         setTitle("Pistas Y Evidencias");
-
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        setSize(600, 750); //Modificado para dar espacio al botón inferior
-
+        setSize(600, 750);
         setLayout(new BorderLayout());
-
         getContentPane().setBackground(MAIN_BG_COLOR);
 
         initComponents();
@@ -37,6 +40,9 @@ public class VentanaPistas extends JFrame {
         setLocationRelativeTo(null);
     }
 
+    /**
+     * Añade a la ventana el título arriba, las listas con scroll en el centro y el botón para salir abajo.
+     */
     private void initComponents() {
         //Titulo
         JLabel Titulo = new JLabel("VER PISTAS Y EVIDENCIAS",SwingConstants.CENTER);
@@ -67,17 +73,23 @@ public class VentanaPistas extends JFrame {
         add(panelInferiorVentana, BorderLayout.SOUTH);
     }
 
+    /**
+     * Crea el panel central dividido en dos secciones fijas: una para pistas y otra para evidencias.
+     * * @return El panel principal maquetado en formato JPanel.
+     */
     public JPanel generarPanelPrincipal(){
         //Panel principal
         JPanel panelPrincipal = new JPanel();
         panelPrincipal.setBackground(MAIN_BG_COLOR);
-        panelPrincipal.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20)); //Ajustado margen inferior para el botón
+        panelPrincipal.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         panelPrincipal.setLayout(new GridLayout(2,1,0,20));
+
         //Panel Pistas
         JPanel panelPistas = new JPanel();
         panelPistas.setBackground(PANEL_BG_COLOR);
         panelPistas.setBorder(BorderFactory.createLineBorder(BORDER_COLOR, 2));
         panelPistas.setLayout(new BorderLayout());
+
         //Titulo Pistas
         JLabel tituloPistas = new JLabel("PISTAS",SwingConstants.CENTER);
         tituloPistas.setForeground(TITLE_COLOR);
@@ -85,13 +97,14 @@ public class VentanaPistas extends JFrame {
         tituloPistas.setBackground(PANEL_BG_COLOR);
         tituloPistas.setBorder(BorderFactory.createEmptyBorder(15, 0, 10, 0));
         panelPistas.add(tituloPistas,BorderLayout.NORTH);
+
         //Panel Mostrar Pistas
         JPanel panelMostrarPistas = new JPanel();
         panelMostrarPistas.setBackground(PANEL_BG_COLOR);
         panelMostrarPistas.setLayout(new GridLayout(0,1,0,15));
+
         //Añadir Pistas
         for (Pista p : casoactual.getPistas()){
-            // Se usa formato HTML para que el texto largo salte de línea automáticamente hacia abajo
             JLabel labelpistas = new JLabel("<html><body style='text-align: center; width: 350px;'>" + p.getTexto() + "</body></html>", SwingConstants.CENTER);
             labelpistas.setFont(new Font("SansSerif", Font.PLAIN, 14));
             labelpistas.setForeground(TEXT_COLOR);
@@ -114,6 +127,7 @@ public class VentanaPistas extends JFrame {
         panelEvidencias.setBackground(PANEL_BG_COLOR);
         panelEvidencias.setBorder(BorderFactory.createLineBorder(BORDER_COLOR, 2));
         panelEvidencias.setLayout(new BorderLayout());
+
         //Titulo Evidencias
         JLabel tituloEvidencias = new JLabel("EVIDENCIAS",SwingConstants.CENTER);
         tituloEvidencias.setForeground(TITLE_COLOR);
@@ -121,10 +135,12 @@ public class VentanaPistas extends JFrame {
         tituloEvidencias.setBackground(PANEL_BG_COLOR);
         tituloEvidencias.setBorder(BorderFactory.createEmptyBorder(15, 0, 10, 0));
         panelEvidencias.add(tituloEvidencias,BorderLayout.NORTH);
+
         //Panel Mostrar Evidencias
         JPanel panelMostrarEvidencias = new JPanel();
         panelMostrarEvidencias.setBackground(PANEL_BG_COLOR);
         panelMostrarEvidencias.setLayout(new GridLayout(0,1,0,15));
+
         //Mostrar Evidencias
         for (Evidencia e : casoactual.getEvidencias()){
             JLabel labelEvidencias = new JLabel("<html><body style='text-align: center; width: 350px;'>" + e.getTexto() + "</body></html>", SwingConstants.CENTER);
