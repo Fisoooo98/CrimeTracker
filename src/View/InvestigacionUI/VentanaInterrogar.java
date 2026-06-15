@@ -189,7 +189,8 @@ public class VentanaInterrogar extends JFrame {
         panelLog.setBorder(BorderFactory.createLineBorder(BORDER_COLOR, 4));
         panelLog.setPreferredSize(new Dimension(1100, 120));
 
-        int contador = caso.getContador_preguntas();
+        Caso casoActu  = casoService.obtenerCasoActivo();
+        int contador = casoActu.getContador_preguntas();
         lblcontadorpreguntas = new JLabel("Preguntas Restantes: " + contador);
         lblcontadorpreguntas.setFont(new Font("Monospaced", Font.BOLD, 23));
         lblcontadorpreguntas.setForeground(TEXT_COLOR);

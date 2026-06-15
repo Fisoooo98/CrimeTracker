@@ -135,5 +135,6 @@ public class JuegoService {
      */
     public void actualizarContadorPreguntas(int id_caso,int contpreguntas) {
         casoDAO.actualizarPreguntasRestantes(id_caso,contpreguntas);
+
     }
 }

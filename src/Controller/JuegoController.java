@@ -110,8 +110,12 @@ public class JuegoController {
                 if (rs.isEvidenciaObtenida()){
                     ventanaInterrogar.mostrarDialogo("Has obtenido una evidencia");
                 }
+
                 //Actualizar el contador
+                System.out.println("Actualizando contador preguntas actuales : " + caso.getContador_preguntas());
                 juegoService.actualizarContadorPreguntas(caso.getId_caso(),caso.getContador_preguntas() - 1);
+                caso.setContador_preguntas(caso.getContador_preguntas()-1);
+                System.out.println("Contador Actual: " + caso.getContador_preguntas());
                 ventanaInterrogar.actualizarContador(caso.getContador_preguntas());
             }else{
                 ventanaInterrogar.mostrarDialogo("No tienes mas preguntas");
