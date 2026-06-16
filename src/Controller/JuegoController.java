@@ -70,7 +70,6 @@ public class JuegoController {
         }
 
         ventanaActual = new VentanaNotas(casoActual);
-        ventanaActual.setLocationRelativeTo(null);
         ventanaActual.setVisible(true);
     }
 
@@ -112,10 +111,8 @@ public class JuegoController {
                 }
 
                 //Actualizar el contador
-                System.out.println("Actualizando contador preguntas actuales : " + caso.getContador_preguntas());
                 juegoService.actualizarContadorPreguntas(caso.getId_caso(),caso.getContador_preguntas() - 1);
-                caso.setContador_preguntas(caso.getContador_preguntas()-1);
-                System.out.println("Contador Actual: " + caso.getContador_preguntas());
+                caso=casoService.obtenerCasoActivo();
                 ventanaInterrogar.actualizarContador(caso.getContador_preguntas());
             }else{
                 ventanaInterrogar.mostrarDialogo("No tienes mas preguntas");

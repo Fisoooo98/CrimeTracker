@@ -1,6 +1,5 @@
 package Controller;
 
-import Model.Entities.Caso;
 import Model.Entities.Dificultad;
 import Model.Entities.Estado;
 import Model.Service.CasoService;
@@ -9,7 +8,6 @@ import View.VerCasos;
 public class CasoController {
 
     CasoService casoService;
-    private Caso casoActual;
 
     /**
      * Inicializa el controlador de VerCasos
@@ -31,6 +29,5 @@ public class CasoController {
 
         casoService.seleccionarCasoActual(id_caso);
         casoService.actualizarEstadoCaso(Estado.PENDIENTE, id_caso);
-        this.casoActual = casoService.obtenerCasoPorId(id_caso);
     }
 }

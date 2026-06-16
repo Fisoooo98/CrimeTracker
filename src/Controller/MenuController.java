@@ -50,7 +50,6 @@ public class MenuController {
         }
 
         ventanaActual = new VerCasos();
-        ventanaActual.setLocationRelativeTo(null);
         ventanaActual.setVisible(true);
     }
 
@@ -64,7 +63,6 @@ public class MenuController {
         }
         ResultadoPerfil resultadoPerfil = casoService.obtenerPerfil();
         ventanaActual = new VistaPerfil(resultadoPerfil);
-        ventanaActual.setLocationRelativeTo(null);
         ventanaActual.setVisible(true);
     }
     /**
@@ -77,7 +75,6 @@ public class MenuController {
         }
 
         ventanaActual = new ListarCasos();
-        ventanaActual.setLocationRelativeTo(null);
         ventanaActual.setVisible(true);
     }
 }

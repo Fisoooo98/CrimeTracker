@@ -79,6 +79,7 @@ public class SospechosoDAO {
         return null;
     }
 
+
     public HashMap<String,String> obtenerPreguntasYrespuestas(int id_sospechoso,List<Integer> id_pistas){
         int posicion = 2;
         HashMap<String,String> preguntasYrespuestas = new HashMap<>();
@@ -91,12 +92,12 @@ public class SospechosoDAO {
                 obtenerPlaceHolders.append("?,");
             }
             obtenerPlaceHolders = new StringBuilder("IN ("+obtenerPlaceHolders.substring(0, obtenerPlaceHolders.length() - 1) + "))");
-
         }
 
         String sql = "Select p.texto_pregunta,r.texto_respuesta from Respuestas r,Preguntas p " +
-                "where r.id_pregunta = p.id_pregunta and r.id_sospechoso = ?" +
+        "where r.id_pregunta = p.id_pregunta and r.id_sospechoso = ?" +
                 "and (p.id_pista_requisito IS NULL OR p.id_pista_requisito " + obtenerPlaceHolders;
+
         try(
                 Connection connection = DriverManager.getConnection(url);
                 PreparedStatement ps = connection.prepareStatement(sql);
@@ -110,7 +111,6 @@ public class SospechosoDAO {
             while (rs.next()) {
                 preguntasYrespuestas.put(rs.getString("texto_pregunta"), rs.getString("texto_respuesta"));
             }
-
         }catch (SQLException e) {
             throw new RuntimeException(e);
         }
